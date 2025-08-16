@@ -1,0 +1,31 @@
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: rgb(31, 30, 30);
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+  }
+  
+  .logo a {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav a {
+    margin-left: 1.5rem;
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    .nav a {
+      margin-left: 1rem;
+    }
+    .header {
+      padding: 1rem;
+    }
+  }
+  

@@ -1,0 +1,24 @@
+// Bootstrap
+@import '~bootstrap/scss/bootstrap.scss';
+// @import '~bootstrap-icons/font/bootstrap-icons.css';
+
+
+.collapse {
+    visibility: visible;
+}
+
+
+/* Custom dropdown hover styling */
+.dropdown-menu.bg-dark {
+    background-color: #212529; // Bootstrap's dark background
+}
+
+.dropdown-menu.bg-dark .dropdown-item {
+    color: #adb5bd; // Bootstrap's text-light (but slightly muted)
+}
+
+.dropdown-menu.bg-dark .dropdown-item:hover,
+.dropdown-menu.bg-dark .dropdown-item:focus {
+    color: #ffffff; // white text on hover
+    background-color: #343a40; // slightly lighter dark (or keep same)
+} /* Custom dropdown hover styling */
