@@ -10,7 +10,7 @@ import BootstrapClient from "@/components/layouts/BootstrapClient";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
+import { AuthProvider } from '@/app/context/AuthContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,13 +36,13 @@ export default function RootLayout({
   return (
     <html lang="en">
 
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} >
-       {/* <SessionWrapper> */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased` } suppressHydrationWarning={true}>
+       <AuthProvider>
         <BootstrapClient />
         <Header />
         {children}
         <Footer />
-        {/* </SessionWrapper> */}
+        </AuthProvider>
       </body>
 
     </html>
