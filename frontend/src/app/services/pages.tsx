@@ -7,7 +7,8 @@ export default function About() {
     return (
         <>
             
-            <section className='container p-0'>
+            <section className='container p-0 bg-white text-black dark:bg-zinc-900 dark:text-white'>
+
                 <div className="row g-4 align-items-center">
                     <div className="col-md-6">
                         <h2 style={{ fontSize: "45px !important" }}>About</h2>

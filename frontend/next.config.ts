@@ -9,8 +9,8 @@ const nextConfig: NextConfig = {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_PUBLISH_KEY: process.env.STRIPE_PUBLISH_KEY,
   },
-   allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev','http://192.168.100.14'],
-   
+   allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev'],
+   output: 'export',
    
 };
 

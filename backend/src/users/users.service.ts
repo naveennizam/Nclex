@@ -58,10 +58,10 @@ export class UsersService {
     );
     return result.rows[0];
   }
-async findById(email : string){
-  const result = await this.db.query( 'SELECT name, image FROM users WHERE email = $1',
-  [email],);
-  return result.rows[0]
-}
+  async findById(email: string) {
+    const result = await this.db.query('SELECT name, image FROM users WHERE email = $1',
+      [email],);
+    return result.rows[0]
+  }
 
 }

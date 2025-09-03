@@ -1,23 +1,9 @@
-
-import Image from "next/image";
-
-
-export default function About() {
-
+export default function HomePage() {
     return (
-        <>
-            
-            <section className='container p-0'>
-                <div className="row g-4 align-items-center">
-                    <div className="col-md-6">
-                        <h2 style={{ fontSize: "45px !important" }}>About</h2>
-                    </div>
-                    <div className="col-md-6 text-center mt-5">
-                    </div>
-                </div>
-
-            </section>
-
-        </>
+      <div className="min-h-screen  p-6">
+        <h1 className="text-3xl font-bold">Dark Mode Test</h1>
+        <p>This background should change on theme toggle.</p>
+      </div>
     );
-}
+  }
+  

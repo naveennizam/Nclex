@@ -21,7 +21,6 @@ export default function DashboardPage() {
     
             const res = await fetchWithAuth(`${domain}/auth/profile`);
             const data = await res.json();
-            console.log('👤 User Profile:', data);
         };
 
         if (accessToken) {

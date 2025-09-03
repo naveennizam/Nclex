@@ -10,7 +10,7 @@ export class JwtStrategy extends PassportStrategy(Strategy,'jwt') {
 constructor() {
     super({jwtFromRequest: ExtractJwt.fromExtractors([
         (req) => {
-          console.log('COOKIE JWT:', req?.cookies?.access_token);
+       //   console.log('COOKIE JWT:', req?.cookies?.access_token);
           return req?.cookies?.access_token;
         },
       ]),
@@ -19,7 +19,7 @@ constructor() {
   }
 
   async validate(payload: any) {
-    console.log("VAL*DAT",payload)
+  //  console.log("VAL*DAT",payload)
     return { userId: payload.sub, email: payload.email };   
   }
 }

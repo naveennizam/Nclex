@@ -1,0 +1,8 @@
+.header {
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-color: color-mix(in srgb, var(--bg) 55%, transparent);
+    @apply sticky top-0 z-50 w-full transition-all;
+  }

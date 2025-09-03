@@ -1,191 +1,171 @@
-"use client";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-// import { useSession, signOut } from "next-auth/react";
+
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useTheme } from 'next-themes';
+import { Moon, Sun, Github, Monitor } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import Divider from '../ui/Divider'
 import dynamic from "next/dynamic";
 import { useAuth } from '../../app/context/AuthContext';
 
 import { useAuthFetch } from '@/app/utils/authFetch';
 
 
+const links = [
+  { href: '/docs', label: 'Docs' },
+  { href: '/learn', label: 'Learn' },
+  { href: '/practice', label: 'Practice' },
+];
 
-const Header = () => {
+export default function Navbar() {
+  const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  const { isLoggedIn, logout, accessToken } = useAuth();
+  let [userProfile, setUserProfile] = useState([])
+  let [loading, setLoading] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+ 
+
+  const Modal = dynamic(() => import('./Modal'), {
+    ssr: false
+  });
 
 
-    const pathname = usePathname();
-    const { isLoggedIn, logout, accessToken } = useAuth();
-    let [userProfile, setUserProfile] = useState([])
-    let [loading, setLoading] = useState(false)
+  const fetchWithAuth = useAuthFetch();
 
-    const Modal = dynamic(() => import('./Modal'), {
-        ssr: false
-    });
+  useEffect(() => {
 
+    const getProfile = async () => {
+      const isDev = process.env.NEXT_PUBLIC_Phase === 'development';
+      const domain = isDev ? process.env.NEXT_PUBLIC_Backend_Domain : '';
 
-    const showModal = () => {
-        const { Modal } = require("bootstrap");
-        const myModal = new Modal("#exampleModal");
-        myModal.show();
-
+      const res = await fetchWithAuth(`${domain}/auth/profile`);
+      const data = await res.json();
+      setUserProfile(data)
+      setLoading(true)
     };
-    const fetchWithAuth = useAuthFetch();
 
-    useEffect(() => {
+    if (accessToken) {
+      getProfile();
+    }
+  }, [accessToken]);
 
-        const getProfile = async () => {
-            const isDev = process.env.NEXT_PUBLIC_Phase === 'development';
-            const domain = isDev ? process.env.NEXT_PUBLIC_Backend_Domain : '';
+  useEffect(() => setMounted(true), []);
 
-            const res = await fetchWithAuth(`${domain}/auth/profile`);
-            const data = await res.json();
-            setUserProfile(data)
-            setLoading(true)
-            console.log('👤 User Profile:', data.name[0].toUpperCase());
-        };
+  useEffect(() => {}, [showModal]);
 
-        if (accessToken) {
-            getProfile();
-        }
-    }, [accessToken]);
-    console.log(userProfile)
+  const toggleTheme = () => {
+    if (theme === 'light') {
+      setTheme('dark');
+    } else if (theme === 'dark') {
+      setTheme('system');
+    } else {
+      setTheme('light');
+    }
+  };
 
-    return (
-        <>
-
-            <>
-                <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-                    <div className="container-fluid mx-4">
-                        <Link className="logo d-flex align-items-center me-auto" href="/">
-
-                            <Image
-                                src="/images/icon1.png"
-                                alt="NCLEX LOGO"
-                                width={180}
-                                height={50}
-                                priority={true}
-                                loading="eager"
-                                style={{ width: "auto", height: "auto" }}
-                            />
-
-                        </Link>
-
-                        <button
-                            className="navbar-toggler"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#navbarSupportedContent"
-                            aria-controls="navbarSupportedContent"
-                            aria-expanded="false"
-                            aria-label="Toggle navigation"
-                        >
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
-
-                        <div
-                            className="collapse navbar-collapse "
-                            id="navbarSupportedContent"
-                        >
-                            <ul className="navbar-nav me-auto mb-2 mb-lg-0 mx-4">
-                                <li className="nav-item">
-                                    <a className="nav-link" aria-current="page" href="/nclex-rn">
-                                        NCLEX-RN
-                                    </a>
-                                </li>
-
-                                <li className="nav-item">
-                                    <a
-                                        className="nav-link"
-                                        aria-current="page"
-                                        href="/nclex-pn"
-                                        data-toggle="tab"
-                                    >
-                                        NCLEX-PN                                        </a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" aria-current="page" href="/pricing">
-                                        Pricing
-                                    </a>
-                                </li>
-
-                                <li className="nav-item">
-                                    <a className="nav-link" aria-current="page" href="/testimonials">
-                                        Testimonials
-                                    </a>
-                                </li>
-
-                                <li className="nav-item"><div className="dropdown">
-                                    <button className="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Resources
-                                    </button>
-                                    <div className="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton">
-                                        <a className="dropdown-item text-light" href="books">Study Guide Books</a>
-                                        <a className="dropdown-item text-light" href="questions">NCLEX preparation Questions</a>
-                                        <a className="dropdown-item text-light" href="blog">Simple Nursing Blog</a>
-                                    </div>
-                                </div></li>
-
-                            </ul>
-                        </div>
-
-                        {isLoggedIn && loading ? (
-                            <>
-                                {/* <div className="w-10 h-10 rounded-full overflow-hidden bg-white text-black flex items-center justify-center font-semibold text-sm uppercase">
-                    
-                                {userProfile.image ? (
-                                    
-                                    <img
-                                        src={userProfile.image}
-                                        alt={userProfile.name}
-                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                                      
-                                        class="w-100 h-100 object-fit-cover rounded-circle"
-                                    />
-                                ) : (
-                                    userProfile.name[0].toUpperCase()
-                                )}
-                               </div> */}
-                                <div
-                                    className="rounded-circle overflow-hidden"
-                                    style={{ width: '40px', height: '40px' }}
-                                >
-                                    {userProfile.image ? (
-                                        <img
-                                            src={userProfile.image}
-                                            alt={userProfile.name}
-                                            onError={(e) => {
-                                                e.currentTarget.style.display = 'none';
-                                                const fallback = e.currentTarget.nextElementSibling;
-                                                if (fallback) fallback.style.display = 'flex';
-                                            }}
-                                            className="w-100 h-100 object-fit-cover rounded-circle"
-                                        />
-                                    ) : null}
-
-                                    <div
-                                        className="w-100 h-100 d-flex align-items-center justify-content-center bg-white text-black fw-bold rounded-circle text-uppercase"
-                                        style={{ display: userProfile.image ? 'none' : 'flex' }}
-                                    >
-                                        {userProfile.name[0].toUpperCase()}
-                                    </div>
-                                </div>
-
-                                <button onClick={logout}>Logout</button>
-                            </>
-                        ) : (<button className="btn btn-primary" type="button" onClick={showModal}>Sign In </button>
-                        )}
+  return (<>
+    <>
+      <header className="header">
 
 
-                    </div>
-                </nav>
+        <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+          {/* Logo */}
+          <Link href="/" className=" font-semibold text-lg">
+            ▲ NCLEX
+          </Link>
 
-            </>
-            .
-            <Modal />
-        </>
-    );
-};
+          {/* Nav Links */}
+          <nav className="hidden md:flex gap-8">
+            {links.map(({ href, label }) => (
+              <Link key={href} href={href} className="group relative text-sm text-neutral-300 hover:text-white transition-colors">
+                {label}
+                <span
+                  className={`absolute left-0 -bottom-1 h-[2px] w-full bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left ${pathname === href ? 'scale-x-100' : ''
+                    }`}
+                />
+              </Link>
+            ))}
+          </nav>
 
-export default Header;
+          {/* Right Icons */}
+          <div className="flex items-center gap-4">
+          
 
+            {mounted && (
+              <button
+                onClick={toggleTheme}
+                className={`p-1 rounded transition-colors ${theme === 'system'
+                  ? 'bg-gray-700 text-white hover:bg-gray-800 dark:bg-neutral-500 dark:text-white hover:bg-gray-200 dark:hover:bg-neutral-800'
+                  : theme === 'dark'
+                    ? ' bg-neutral-500 text-white hover:bg-neutral-600'
+                    : 'bg-gray-700 text-white hover:bg-gray-800'
+                  }`}
+                aria-label="Toggle theme"
+              >
+                {theme === 'light' && <Moon size={18} />}
+                {theme === 'dark' && <Sun size={18} />}
+                {theme === 'system' && <Monitor size={18} />} 
+              </button>
+            )}
+
+          </div>
+
+          <div className="flex items-center gap-4">
+            {isLoggedIn && loading ? (
+              <>
+                <div
+                  className="w-10 h-10 rounded-full overflow-hidden relative"
+                >
+                  {userProfile.image ? (
+                    <img
+                      src={userProfile.image}
+                      alt={userProfile.name}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = e.currentTarget.nextElementSibling;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : null}
+
+                  {/* Fallback avatar with initials */}
+                  <div
+                    className="w-full h-full flex items-center justify-center bg-white text-black font-bold rounded-full uppercase"
+                    style={{ display: userProfile.image ? 'none' : 'flex' }}
+                  >
+                    {userProfile.name?.[0]}
+                  </div>
+                </div>
+
+                <button
+                  onClick={logout}
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button
+                className="button-primary"
+                onClick={() => setShowModal(true)}
+              >
+                Sign In
+              </button>
+            )}
+          </div>
+
+        </div>
+        <Divider />
+
+      </header >
+    {showModal && <Modal onClose={() => setShowModal(false)} theme="system"/>}
+    </>
+
+  </>
+  );
+}

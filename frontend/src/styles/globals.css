@@ -1,0 +1,157 @@
+@import "tailwindcss";
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+@import './Footer.css';
+@import './Header.css';
+/* ========== THEME VARIABLES ========== */
+
+/* ========== LIGHT THEME (DEFAULT) ========== */
+:root {
+  --bg: oklch(0.98 0 0);
+  ;
+  --text: oklch(0.15 0 0);
+  --muted-text: #6b7280;
+
+  --primary: #2563eb;
+  --primary-hover: #1e40af;
+  --button-text: #ffffff;
+
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+
+  --success: #16a34a;
+  --warning: #d97706;
+  --error: #b91c1c;
+  --info: #0284c7;
+
+  --focus: #2563eb;
+
+  --social-media: #353535;
+  --social-media-focus: #000000;
+  --input-filed-border :#c7c6c6 ;
+
+}
+
+/* ========== DARK THEME ========== */
+.dark {
+  --bg: oklch(0.15 0 0);
+  ;
+  --text: oklch(0.95 0 0);
+  --muted-text: #94a3b8;
+
+  --primary: #2563eb;
+  --primary-hover: #1e40af;
+  
+  --button-text: #f6f6f8;
+
+  --card-bg: #1e293b;
+  --border: #334155;
+
+  --success: #22c55e;
+  --warning: #fbbf24;
+  --error: #f87171;
+  --info: #38bdf8;
+
+  --focus: #93c5fd;
+
+
+  --social-media: #b3b3b3;
+  --social-media-focus: #eaeaea;
+  --input-filed-border :#383838 ;
+}
+
+
+/* ========== GLOBAL ELEMENTS ========== */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* ========== COMPONENTS ========== */
+
+
+
+.input-field {
+
+  background-color: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--input-filed-border);
+  
+ 
+}
+
+.input-field::placeholder {
+  color: var(--muted-text);
+}
+
+
+.cards {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(52, 51, 51, 0.05);
+  /* optional */
+}
+
+.button-primary {
+  background-color: var(--primary);
+  color: var(--button-text);
+  padding: 0.6rem 2rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color 0.2s ease box-shadow 0.2s ease;
+}
+
+.button-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+
+
+.button-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.selection-button:hover{
+  background-color: var(--muted-text);
+  color: var(--button-text);
+  padding: 0.6rem 2rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.button-success {
+  background-color: var(--success);
+  color: var(--button-text);
+  padding: 0.6rem 2rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color 0.2s ease box-shadow 0.2s ease;
+}
+.button-success:hover {
+  background-color: #138a3f;
+}
+.button-google {
+ 
+  color: var(--text);
+  padding: 0.6rem 2rem;
+  border: 1px solid var(--text);
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color 0.2s ease box-shadow 0.2s ease;
+}
