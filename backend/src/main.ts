@@ -9,7 +9,8 @@ async function bootstrap() {
  
   app.use(cookieParser());
   app.enableCors({
-    origin: configService.get<string>('Frontend_Domain') || 'https://nclex-mc31.onrender.com', // ✅ MUST be exact origin
+    origin: 'https://nclex-mc31.onrender.com', 
+  //  origin: configService.get<string>('Frontend_Domain') || 'https://nclex-mc31.onrender.com', // ✅ MUST be exact origin
     credentials: true, // ✅ Required for cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // ✅ fine
   });
@@ -30,8 +31,8 @@ async function bootstrap() {
 //   },
 //   credentials: true, // ✅ enable credentials here
 // });
-
+const port = process.env.PORT || 8080;
    await app.listen(process.env.PORT ?? 8080);
-  
+   console.log(`🚀 App listening on port ${port}`);
 }
 bootstrap();
