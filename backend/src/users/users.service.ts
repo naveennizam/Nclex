@@ -48,7 +48,7 @@ export class UsersService {
       'INSERT INTO users (email, name,image,provider,password) VALUES ($1, $2, $3 , $4, $5) RETURNING *;',
       [user.email, user.name, user.image, 'Google', null],
     );
-console.log(result.row[0])
+console.log(result.rows[0])
     return result.rows[0];
   }
   async updateLastLogin(userId: string) {

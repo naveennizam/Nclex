@@ -32,7 +32,7 @@ export class AuthController {
     res.cookie('access_token', access_token, {
       httpOnly: true,
       sameSite: 'none',
-      secure:  true, // true in production
+      secure: true, // true in production
       //    maxAge: 2 * 60 * 1000,
       maxAge: 15 * 60 * 1000, // 15 minutes
 
@@ -42,7 +42,7 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
       //  maxAge: 20 * 60 * 1000, // 20 min
       sameSite: 'none',
-      secure:  true, // false for development
+      secure: true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
 
@@ -64,7 +64,7 @@ export class AuthController {
     res.cookie('access_token', access_token, {
       httpOnly: true,
       sameSite: 'none', //lax
-      secure:  true, // true in production
+      secure: true, // true in production
       maxAge: 2 * 60 * 1000,
     });
     res.cookie('refresh_token', refresh_token, {
@@ -72,7 +72,7 @@ export class AuthController {
       // maxAge: 7 * 24 * 60 * 60 * 1000,
       maxAge: 20 * 60 * 1000,
       sameSite: 'none',  // lax
-      secure:  true, // false for development
+      secure: true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
 
@@ -92,8 +92,9 @@ export class AuthController {
 
 
     const user = req.user
-console.log("UUSER",user)
+    console.log("UUSER", user)
     if (!user) return res.status(401).send({ message: 'Invalid credentials' });
+
     const result = await this.authService.googleLogin(user);
 
     const { access_token, refresh_token } = this.authService.getTokens(result);
@@ -137,7 +138,6 @@ console.log("UUSER",user)
   @Post('refresh-token')
   refresh(@Req() req, @Res({ passthrough: true }) res: Response) {
     const user = req.user;
-    console.log('refresh-token',req)
     const access_token = this.authService.getAccessTokens(user);
     return { access_token: access_token };
   }
