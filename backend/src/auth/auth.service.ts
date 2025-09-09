@@ -96,7 +96,7 @@ export class AuthService {
   }
 
   getAccessTokens(user: any) {
-//    console.log('getAccessTokens', user)
+    console.log('getAccessTokens', user)
     const payload = { email: user.email, sub: user.id, name: user.name };
     const access_token = this.jwtService.sign(payload, {
       secret: jwtConstants.secret,
