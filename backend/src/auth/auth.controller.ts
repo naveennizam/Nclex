@@ -33,12 +33,14 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'lax',
       secure: false, // true in production
-      maxAge: 2 * 60 * 1000,
+      //    maxAge: 2 * 60 * 1000,
+      maxAge: 15 * 60 * 1000, // 15 minutes
+
     });
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-      // maxAge: 7 * 24 * 60 * 60 * 1000,
-      maxAge: 20 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
+      //  maxAge: 20 * 60 * 1000, // 20 min
       sameSite: 'lax',
       secure: false, // false for development
       path: '/', // ✅ required so it is sent to all paths
@@ -90,9 +92,9 @@ export class AuthController {
 
 
     const user = req.user
-    
+
     if (!user) return res.status(401).send({ message: 'Invalid credentials' });
-    const result =  await this.authService.googleLogin(user);
+    const result = await this.authService.googleLogin(user);
 
     const { access_token, refresh_token } = this.authService.getTokens(result);
     res.cookie('access_token', access_token, {
