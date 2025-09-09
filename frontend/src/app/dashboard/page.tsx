@@ -7,7 +7,7 @@ import { useAuthFetch } from '@/app/utils/authFetch';
 export default function DashboardPage() {
     //  const { accessToken } = useAuth();
     const { accessToken, loading } = useAuth();
-
+console.log( "accessToken",  accessToken, "loading",loading)
     const router = useRouter();
 
 
@@ -20,7 +20,7 @@ export default function DashboardPage() {
             const domain = isDev ? process.env.NEXT_PUBLIC_Backend_Domain : '';
     
             const res = await fetchWithAuth(`${domain}/auth/profile`);
-            const data = await res.json();
+          //  const data = await res.json();
         };
 
         if (accessToken) {
@@ -31,7 +31,8 @@ export default function DashboardPage() {
     useEffect(() => {
         if (!loading && !accessToken) {
             // No token even after refresh attempt
-            router.push('/');
+          //  router.push('/');
+          console.log("not working")
 
         }
     }, [loading, accessToken]);

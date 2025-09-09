@@ -153,6 +153,7 @@ console.log("UUSER",user)
   //@UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Req() req) {
+    console.log("profile", req.user)
     return req.user;
   }
 
