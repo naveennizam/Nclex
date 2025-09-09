@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
 
         const data = await res.json();
-console.log("getNewAccessToken",data)
         if (res.ok) {
           setAccessToken(data.access_token);
           setIsLoggedIn(true)

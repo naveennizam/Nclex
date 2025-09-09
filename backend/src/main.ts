@@ -31,8 +31,6 @@ async function bootstrap() {
 //   },
 //   credentials: true, // ✅ enable credentials here
 // });
-const port = process.env.PORT || 8080;
    await app.listen(process.env.PORT ?? 8080);
-   console.log(`🚀 App listening on port ${port}`);
 }
 bootstrap();

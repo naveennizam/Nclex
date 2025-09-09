@@ -11,7 +11,6 @@ export const useAuthFetch = () => {
       ...options.headers,
       Authorization: `Bearer ${accessToken}`,
     };
-console.log("header",headers,"url",url)
     return fetch(url, { ...options, headers });
   };
 };
