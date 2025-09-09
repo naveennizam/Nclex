@@ -168,7 +168,7 @@ const Modal = ({ onClose }) => {
   }, []);
 
   if (!mounted) return null;
-  // const color = resolvedTheme === 'dark' ? '#292828' : '#ede8e8'; // red-500 or neutral-500
+  
   const color = resolvedTheme === 'system' ? 'text-gray-800' : resolvedTheme === 'dark' ? '#292828' : '#ede8e8'
 
   return (

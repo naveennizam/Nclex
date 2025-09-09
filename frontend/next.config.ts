@@ -11,7 +11,9 @@ const nextConfig: NextConfig = {
   },
    allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev'],
    output: 'export',
-   
+   images: {
+    unoptimized: true, // ✅ Disable Image Optimization
+  },
 };
 
 export default nextConfig;
