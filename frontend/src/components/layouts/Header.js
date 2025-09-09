@@ -13,8 +13,8 @@ import { useAuthFetch } from '@/app/utils/authFetch';
 
 
 const links = [
-  { href: '/docs', label: 'Docs' },
-  { href: '/learn', label: 'Learn' },
+  // { href: '/docs', label: 'Docs' },
+  // { href: '/learn', label: 'Learn' },
   { href: '/practice', label: 'Practice' },
 ];
 
@@ -44,6 +44,7 @@ export default function Navbar() {
 
       const res = await fetchWithAuth(`${domain}/auth/profile`);
       const data = await res.json();
+      console.log("Header.js",res,data)
       setUserProfile(data)
       setLoading(true)
     };

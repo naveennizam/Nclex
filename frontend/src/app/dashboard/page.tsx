@@ -7,12 +7,12 @@ import { useAuthFetch } from '@/app/utils/authFetch';
 export default function DashboardPage() {
     //  const { accessToken } = useAuth();
     const { accessToken, loading } = useAuth();
-console.log( "accessToken",  accessToken, "loading",loading)
+console.log("page: Dashboard", "accessToken",  accessToken, "loading",loading)
     const router = useRouter();
 
 
     const fetchWithAuth = useAuthFetch();
-
+console.log("dashboard",fetchWithAuth)
     useEffect(() => {
 
         const getProfile = async () => {
@@ -20,6 +20,7 @@ console.log( "accessToken",  accessToken, "loading",loading)
             const domain = isDev ? process.env.NEXT_PUBLIC_Backend_Domain : '';
     
             const res = await fetchWithAuth(`${domain}/auth/profile`);
+            console.log(fetchWithAuth(`${domain}/auth/profile`),res)
           //  const data = await res.json();
         };
 
