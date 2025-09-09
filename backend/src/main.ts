@@ -9,10 +9,11 @@ async function bootstrap() {
  
   app.use(cookieParser());
   app.enableCors({
-    origin: configService.get<string>('Frontend_Domain'), // your Next.js frontend URL
-    methods: 'GET,POST,PUT,DELETE',
-    credentials: true, // optional: if you send cookies/auth headers
+    origin: configService.get<string>('Frontend_Domain') || 'https://nclex-mc31.onrender.com', // ✅ MUST be exact origin
+    credentials: true, // ✅ Required for cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // ✅ fine
   });
+  
 
 
   const allowedOrigins = ['http://localhost:3000','http://192.168.100.14:3000'];

@@ -31,8 +31,8 @@ export class AuthController {
 
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: false, // true in production
+      sameSite: 'none',
+      secure:  true, // true in production
       //    maxAge: 2 * 60 * 1000,
       maxAge: 15 * 60 * 1000, // 15 minutes
 
@@ -41,8 +41,8 @@ export class AuthController {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
       //  maxAge: 20 * 60 * 1000, // 20 min
-      sameSite: 'lax',
-      secure: false, // false for development
+      sameSite: 'none',
+      secure:  true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
 
@@ -63,16 +63,16 @@ export class AuthController {
 
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: false, // true in production
+      sameSite: 'none', //lax
+      secure:  true, // true in production
       maxAge: 2 * 60 * 1000,
     });
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       // maxAge: 7 * 24 * 60 * 60 * 1000,
       maxAge: 20 * 60 * 1000,
-      sameSite: 'lax',
-      secure: false, // false for development
+      sameSite: 'none',  // lax
+      secure:  true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
 
@@ -99,7 +99,7 @@ console.log("UUSER",user)
     const { access_token, refresh_token } = this.authService.getTokens(result);
     res.cookie('access_token', access_token, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: true, // true in production
       maxAge: 2 * 60 * 1000,
     });
@@ -108,7 +108,7 @@ console.log("UUSER",user)
       httpOnly: true,
       // maxAge: 7 * 24 * 60 * 60 * 1000,
       maxAge: 20 * 60 * 1000,
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
