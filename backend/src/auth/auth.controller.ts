@@ -92,7 +92,7 @@ export class AuthController {
 
 
     const user = req.user
-
+console.log("UUSER",user)
     if (!user) return res.status(401).send({ message: 'Invalid credentials' });
     const result = await this.authService.googleLogin(user);
 
@@ -112,7 +112,7 @@ export class AuthController {
       secure: false, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
-
+    console.log(access_token, 'rrt', refresh_token)
     // Send access token to frontend via redirect or frontend call
     res.redirect(`${process.env.Frontend_Domain}/dashboard`);
     //  return { access_token: access_token };
