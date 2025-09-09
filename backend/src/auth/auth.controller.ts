@@ -100,7 +100,7 @@ console.log("UUSER",user)
     res.cookie('access_token', access_token, {
       httpOnly: true,
       sameSite: 'lax',
-      secure: false, // true in production
+      secure: true, // true in production
       maxAge: 2 * 60 * 1000,
     });
 
@@ -109,7 +109,7 @@ console.log("UUSER",user)
       // maxAge: 7 * 24 * 60 * 60 * 1000,
       maxAge: 20 * 60 * 1000,
       sameSite: 'lax',
-      secure: false, // false for development
+      secure: true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
     console.log(access_token, 'rrt', refresh_token)
