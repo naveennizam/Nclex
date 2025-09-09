@@ -137,7 +137,7 @@ console.log("UUSER",user)
   @Post('refresh-token')
   refresh(@Req() req, @Res({ passthrough: true }) res: Response) {
     const user = req.user;
-    console.log('refresh-token',user)
+    console.log('refresh-token',req)
     const access_token = this.authService.getAccessTokens(user);
     return { access_token: access_token };
   }
