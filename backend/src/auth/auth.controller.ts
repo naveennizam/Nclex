@@ -2,8 +2,6 @@
 import type { Response } from 'express';
 import { Controller, Get, Post, UseGuards, Req, Res, UnauthorizedException, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
 //import { AuthGuard } from './auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { AuthGuard } from './guards/auth.guard';
@@ -65,19 +63,18 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none', //lax
       secure: true, // true in production
-      maxAge: 2 * 60 * 1000,
+      maxAge: 15 * 60 * 1000, // 15 minutes
     });
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-      // maxAge: 7 * 24 * 60 * 60 * 1000,
-      maxAge: 20 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    //  maxAge: 20 * 60 * 1000,
       sameSite: 'none',  // lax
       secure: true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
 
     return { access_token: access_token };
-    // res.redirect(`${process.env.Frontend_Domain}/dashboard`);
   }
 
   @Get('google')
@@ -102,21 +99,21 @@ export class AuthController {
       httpOnly: true,
       sameSite: 'none',
       secure: true, // true in production
-      maxAge: 2 * 60 * 1000,
+      // maxAge: 2 * 60 * 1000,
+      maxAge: 15 * 60 * 1000, // 15 minutes
     });
 
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-      // maxAge: 7 * 24 * 60 * 60 * 1000,
-      maxAge: 20 * 60 * 1000,
+       maxAge: 7 * 24 * 60 * 60 * 1000,
+     // maxAge: 20 * 60 * 1000,
       sameSite: 'none',
       secure: true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
-    console.log(access_token, 'rrt', refresh_token)
-    // Send access token to frontend via redirect or frontend call
+   
     res.redirect(`${process.env.Frontend_Domain}/dashboard`);
-    //  return { access_token: access_token };
+   
   }
 
   @Post('logout')
@@ -151,7 +148,7 @@ export class AuthController {
 
 
   @UseGuards(HeaderAccessTokenGuard)
-  //@UseGuards(AuthGuard)
+  
   @Get('profile')
   getProfile(@Req() req) {
     console.log("profile", req.user)

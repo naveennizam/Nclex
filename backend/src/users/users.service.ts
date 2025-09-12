@@ -10,17 +10,6 @@ export type User = {
 };
 
 @Injectable()
-// export class UsersService {
-//   private readonly users: User[] = [
-//     { userId: 1, email: 'john@gmail.com', password: bcrypt.hashSync('changeme', 10) }, // hashed password },
-//     { userId: 2, email: 'maria@example.com', password: 'guess' },
-//   ];
-
-//   async findByEmail(email: string): Promise<User | undefined> {
-
-//     return this.users.find(user => user.email === email);
-//   }
-// }
 
 export class UsersService {
   constructor(private db: DbService) { }

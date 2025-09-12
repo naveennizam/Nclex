@@ -4,8 +4,9 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { QuizModule } from './quiz/quiz.module';
 @Module({
-  imports: [AuthModule, UsersModule,ConfigModule.forRoot()],
+  imports: [AuthModule, UsersModule,ConfigModule.forRoot(), QuizModule],
   controllers: [AppController],
   providers: [AppService],
 })

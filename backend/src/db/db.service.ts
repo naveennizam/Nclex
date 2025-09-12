@@ -1,25 +1,12 @@
-// import { Injectable } from '@nestjs/common';
-// import { Pool } from 'pg';
 
-// @Injectable()
-// export class DbService {
-//   private pool = new Pool({
-//     connectionString: process.env.DATABASE_URL,
-//   });
-
-//   async query(text: string, params?: any[]) {
-//     return this.pool.query(text, params);
-//   }
-// }
-
-// src/db/db.service.ts
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Pool } from 'pg';
 
 @Injectable()
 export class DbService implements OnModuleInit {
   private pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+   // connectionString: process.env.DATABASE_URL,
+   connectionString: process.env.Render_Database_URL,
     ssl: {
       rejectUnauthorized: false, // Needed on Render or Heroku
     },
@@ -53,6 +40,21 @@ export class DbService implements OnModuleInit {
           image TEXT
         );
       `);
+
+      // Create Quiz table 
+      await this.query(`
+        CREATE TABLE quiz (
+  id SERIAL PRIMARY KEY,
+  question TEXT NOT NULL,
+  text TEXT,
+  options TEXT[],
+  answer TEXT[] NOT NULL,
+  rationale TEXT,
+  category VARCHAR(100),
+  type VARCHAR(50) NOT NULL,
+  extra_data JSONB 
+);
+`)
 
       console.log('✅ Users table created or already exists');
     } catch (error) {

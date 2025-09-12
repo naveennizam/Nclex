@@ -9,28 +9,12 @@ async function bootstrap() {
  
   app.use(cookieParser());
   app.enableCors({
-    origin: 'https://nclex-mc31.onrender.com', 
-  //  origin: configService.get<string>('Frontend_Domain') || 'https://nclex-mc31.onrender.com', // ✅ MUST be exact origin
+   origin: 'https://nclex-mc31.onrender.com', 
+// origin: configService.get<string>('Frontend_Domain') , // ✅ MUST be exact origin
     credentials: true, // ✅ Required for cookies
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // ✅ fine
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   });
   
-
-
-  const allowedOrigins = ['http://localhost:3000','http://192.168.100.14:3000'];
-  
-// app.enableCors({
-//   origin: (origin, callback) => {
-   
-//     if (!origin || allowedOrigins.includes(origin)) {
-   
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true, // ✅ enable credentials here
-// });
    await app.listen(process.env.PORT ?? 8080);
 }
 bootstrap();
