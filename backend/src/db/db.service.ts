@@ -5,8 +5,8 @@ import { Pool } from 'pg';
 @Injectable()
 export class DbService implements OnModuleInit {
   private pool = new Pool({
-   // connectionString: process.env.DATABASE_URL,
-   connectionString: process.env.Render_Database_URL,
+  connectionString: process.env.DATABASE_URL,
+  // connectionString: process.env.Render_Database_URL,
     ssl: {
       rejectUnauthorized: false, // Needed on Render or Heroku
     },
