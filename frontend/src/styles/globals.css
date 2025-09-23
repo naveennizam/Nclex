@@ -5,6 +5,7 @@
 
 @import './Footer.css';
 @import './Header.css';
+/* @import './admin.css'; */
 
 /* ========== THEME VARIABLES ========== */
 
@@ -38,6 +39,9 @@
   --input-filed-border: #c7c6c6;
   --input-text-border: 1px solid #c7c6c6;
 
+
+  --dropDownHover: #cce4ff;
+  text-decoration: none;
 
 
 }
@@ -73,6 +77,9 @@
   --input-filed-border: #383838;
   --input-text-border: 3px solid #383838;
 
+
+  --dropDownHover: #1e2d4f;
+  text-decoration: none;
 
 
 }
@@ -145,6 +152,11 @@ body {
   background-color: #138a3f;
 }
 
+.button-success:disabled {
+  background-color: #b4ebc8;
+  cursor: none;
+}
+
 .button-error {
   background-color: var(--error);
   color: var(--button-text);
@@ -177,6 +189,7 @@ body {
   border: var(--input-text-border);
   border-radius: 0.275rem;
 }
+
 select {
   background-color: var(--bg);
   color: var(--text);
@@ -185,10 +198,12 @@ select {
   border-radius: 4px;
   font-family: inherit;
 }
+
 .radio-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem; /* Adjust as needed (1rem = 16px) */
+  gap: 1rem;
+  /* Adjust as needed (1rem = 16px) */
   margin-top: 0.5rem;
 }
 
@@ -196,4 +211,60 @@ select {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+
+
+.test-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  background-color: #1e2d4f;
+}
+
+.test-question-block {
+  display: flex;
+  gap: 40px;
+
+ 
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.test-left-panel,
+.test-right-panel {
+  flex: 1;
+}
+
+.test-left-panel {
+  padding: 10px;
+  border-right: 1px solid #ccc;
+}
+
+.test-options label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+
+@media (max-width: 768px) {
+  .test-container {
+    flex-direction: column;
+  }
+
+  .test-left-panel {
+    border-right: none;
+    border-bottom: 2px solid white;
+  }
+}
+
+input[type="radio"] {
+  accent-color: #090909; 
+  margin-right: 8px;
 }

@@ -3,14 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { Moon, Sun, Github, Monitor } from 'lucide-react';
+import { Moon, Sun, Monitor } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import Divider from '../ui/Divider'
+import Divider from '../gui/Divider'
 import dynamic from "next/dynamic";
-import { useAuth } from '../../app/context/AuthContext';
-
-import { useAuthFetch } from '@/app/utils/authFetch';
-
+import { useAuth } from '@/app/context/AuthContext';
 
 const links = [
   // { href: '/docs', label: 'Docs' },
@@ -19,44 +16,23 @@ const links = [
 ];
 
 export default function Navbar() {
+  const { isLoggedIn, logout,user } = useAuth();
+
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  const { isLoggedIn, logout, accessToken } = useAuth();
-  let [userProfile, setUserProfile] = useState([])
-  let [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false);
- 
+  const [isHovered, setIsHovered] = useState(false);
 
   const Modal = dynamic(() => import('./Modal'), {
     ssr: false
   });
 
 
-  const fetchWithAuth = useAuthFetch();
-
-  useEffect(() => {
-
-    const getProfile = async () => {
-      const isDev = process.env.NEXT_PUBLIC_Phase === 'development';
-      const domain = isDev ? process.env.NEXT_PUBLIC_Backend_Domain : '';
-
-      const res = await fetchWithAuth(`${domain}/auth/profile`);
-      const data = await res.json();
-      console.log("Header.js",res,data)
-      setUserProfile(data)
-      setLoading(true)
-    };
-
-    if (accessToken) {
-      getProfile();
-    }
-  }, [accessToken]);
-
   useEffect(() => setMounted(true), []);
 
-  useEffect(() => {}, [showModal]);
+  useEffect(() => { }, [showModal]);
 
   const toggleTheme = () => {
     if (theme === 'light') {
@@ -94,7 +70,7 @@ export default function Navbar() {
 
           {/* Right Icons */}
           <div className="flex items-center gap-4">
-          
+
 
             {mounted && (
               <button
@@ -109,46 +85,82 @@ export default function Navbar() {
               >
                 {theme === 'light' && <Moon size={18} />}
                 {theme === 'dark' && <Sun size={18} />}
-                {theme === 'system' && <Monitor size={18} />} 
+                {theme === 'system' && <Monitor size={18} />}
               </button>
             )}
 
           </div>
 
-          <div className="flex items-center gap-4">
-            {isLoggedIn && loading ? (
-              <>
-                <div
-                  className="w-10 h-10 rounded-full overflow-hidden relative"
-                >
-                  {userProfile.image ? (
-                    <img
-                      src={userProfile.image}
-                      alt={userProfile.name}
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        const fallback = e.currentTarget.nextElementSibling;
-                        if (fallback) fallback.style.display = 'flex';
-                      }}
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : null}
 
-                  {/* Fallback avatar with initials */}
-                  <div
-                    className="w-full h-full flex items-center justify-center bg-white text-black font-bold rounded-full uppercase"
-                    style={{ display: userProfile.image ? 'none' : 'flex' }}
-                  >
-                    {userProfile.name?.[0]}
+          <div className="flex items-center gap-4">
+            {isLoggedIn  ? (
+              <>
+                {/* Avatar and Dropdown Wrapper */}
+                <div
+                  className="relative"
+                  onMouseEnter={() => { setIsHovered(true) }}
+                  onMouseLeave={() => {setIsHovered(false);}}
+                >
+                  {/* Avatar Circle */}
+                  <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-300 cursor-pointer bg-white">
+                    {user.image ? (
+                      <img
+                        src={user.image}
+                        alt={user.name}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          const fallback = e.currentTarget.nextElementSibling;
+                          if (fallback) fallback.style.display = 'flex';
+                        }}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : null}
+
+                    {/* Fallback Initial (shows if image is missing or failed) */}
+                    <div
+                      className="w-full h-full flex items-center justify-center text-black font-bold uppercase"
+                      style={{ display: user.image ? 'none' : 'flex' }}
+                    >
+                      {user.name?.[0]}
+                    </div>
                   </div>
+
+                  {/* Dropdown Menu */}
+                  {isHovered && (
+                    <div className="absolute top-10 right-0  rounded  z-50 isHover">
+                      <ul className="py-2 text-sm ">
+                        <li>
+                          <Link href="/" className="block px-4 py-2 dropDownLink ">
+                            Profile
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/dashboard" className="block px-4 py-2 dropDownLink ">
+                            Dashboard
+                          </Link>
+                        </li>
+                        {user.role == 'admin' && (
+                          <li>
+                            <Link href="/admin" className="block px-4 py-2 dropDownLink ">
+                              Admin
+                            </Link>
+                          </li>
+                        )}
+                        <li className='dropDownLink'>
+                          <button
+                            onClick={logout}
+                            className="block px-4 py-2 dropDownLink"
+                          >
+                            Logout
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
-                <button
-                  onClick={logout}
-                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                >
-                  Logout
-                </button>
+
+
               </>
             ) : (
               <button
@@ -159,12 +171,10 @@ export default function Navbar() {
               </button>
             )}
           </div>
-
         </div>
         <Divider />
-
       </header >
-    {showModal && <Modal onClose={() => setShowModal(false)} theme="system"/>}
+      {showModal && <Modal onClose={() => setShowModal(false)} theme="system" />}
     </>
 
   </>

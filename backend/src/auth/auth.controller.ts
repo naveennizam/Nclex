@@ -74,7 +74,7 @@ export class AuthController {
       path: '/', // ✅ required so it is sent to all paths
     });
 
-    return { access_token: access_token };
+    return { access_token: access_token ,user:user};
   }
 
   @Get('google')
@@ -89,7 +89,7 @@ export class AuthController {
 
 
     const user = req.user
-    console.log("UUSER", user)
+
     if (!user) return res.status(401).send({ message: 'Invalid credentials' });
 
     const result = await this.authService.googleLogin(user);
@@ -120,7 +120,7 @@ export class AuthController {
   logout(@Res({ passthrough: true }) res: Response) {
 
     res.clearCookie('refresh_token');
-
+    res.clearCookie('access_token');
     return { message: 'Logged out successfully' };
   }
 
@@ -133,11 +133,27 @@ export class AuthController {
 
   @UseGuards(RefreshTokenGuard)
   @Post('refresh-token')
-  refresh(@Req() req, @Res({ passthrough: true }) res: Response) {
+  async refresh(@Req() req, @Res({ passthrough: true }) res: Response) {
     const user = req.user;
     const access_token = this.authService.getAccessTokens(user);
-    return { access_token: access_token };
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true, // true in production
+      // maxAge: 2 * 60 * 1000,
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
+    const  data  =await this.authService.UserRecord(user.email);
+    const payload = {
+     id: data.id,
+     email: data.email,
+     role: data.role,
+     image: data.image,
+     name:data.name
+   };
+    return { access_token: access_token,user:payload };
   }
+  
 
   @Post('debug-refresh')
   debugRefresh(@Req() req) {
@@ -147,12 +163,21 @@ export class AuthController {
   }
 
 
-  @UseGuards(HeaderAccessTokenGuard)
+  // @UseGuards(HeaderAccessTokenGuard)
   
-  @Get('profile')
-  getProfile(@Req() req) {
-    console.log("profile", req.user)
-    return req.user;
-  }
+  // @Get('profile')
+  // async getProfile(@Req() req) {
+  //   const userEmail = req.headers['x-user-email']; 
+  //  const  user  =await this.authService.UserRecord(userEmail);
+  //  const payload = {
+  //   id: user.id,
+  //   email: user.email,
+  //   role: user.role,
+  //   image: user.image,
+  //   name:user.name
+  // };
+  // console.log(payload)
+  //   return payload;
+  // }
 
 }

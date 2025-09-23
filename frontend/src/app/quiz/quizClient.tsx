@@ -40,7 +40,7 @@ export default function QuizPage() {
         const newAnswers = {
             ...answers,
             [currentQ]: typeof val === 'string' ? [val] : val
-          };
+        };
         setAnswers(newAnswers);
         localStorage.setItem("quiz-answers", JSON.stringify(newAnswers));
     };
@@ -67,7 +67,7 @@ export default function QuizPage() {
                 const sortedCorrect = [...question.answer].sort();
                 return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
             }
-            else  {
+            else {
                 const sortedUser = [...(userAnswer || [])].sort();
                 const sortedCorrect = [...question.answer].sort();
                 return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect);
@@ -82,7 +82,7 @@ export default function QuizPage() {
             setIsQuizComplete(true);
             const storedAnswers = JSON.parse(localStorage.getItem('quiz-answers') || '{}');
 
-console.log("YYY",storedAnswers)
+            console.log("YYY", storedAnswers)
             questions.forEach((q: any) => {
                 if (!(q.id in storedAnswers)) {
                     storedAnswers[q.id] = '';
@@ -95,7 +95,7 @@ console.log("YYY",storedAnswers)
 
             questions.forEach((q) => {
                 const userAnswer = answers[q.id];
-                console.log('userAnswer',userAnswer)
+                console.log('userAnswer', userAnswer)
                 if (isAnswerCorrect(q, userAnswer)) {
                     totalScore += 1;
                 }

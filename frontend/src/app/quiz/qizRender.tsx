@@ -14,18 +14,19 @@ export default function QuestionRenderer({ question, savedAnswer, onAnswer }: Qu
 
   if (type === "single") {
     const { options } = question;
-    return options.map((opt) => (
+    return options.map((opt) => {
+      return(
       <div key={opt}>
         <input
           type="radio"
           name={`q-${id}`}
           value={opt}
-          checked={savedAnswer === opt}
+          checked={savedAnswer == opt}
           onChange={() => onAnswer(opt)}
         />
         {opt}
       </div>
-    ));
+  )});
   }
 
   if (type === "multiple") {

@@ -3,12 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
 //import  "../styles/global.scss"
 // import SessionWrapper from "@/components/providers/SessionWrapper"
-import Header from "@/components/layouts/Header";
+import {ConditionalHeader,ConditionalFooter} from "@/app/context/ConditionalProvider";
 import { ThemeProvider } from 'next-themes';
-import Footer from "@/components/layouts/Footer";
+// import Footer from "@/components/layouts/Footer";
 import BootstrapClient from "@/components/layouts/BootstrapClient";
 import 'bootstrap/dist/css/bootstrap.min.css';
- import ThemeToggle from '@/components/ui/ThemeToggle'
+ import ThemeToggle from '@/components/gui/ThemeToggle';
 import { AuthProvider } from '@/app/context/AuthContext';
 
 const geistSans = Geist({
@@ -47,9 +47,9 @@ export default function RootLayout({
           <ThemeToggle/>
       <BootstrapClient />
          <AuthProvider>
-        <Header />
+        <ConditionalHeader />
         {children}
-        <Footer />
+        <ConditionalFooter />
         </AuthProvider>
         </ThemeProvider>
       </body>

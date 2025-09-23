@@ -1,41 +1,34 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { DataTable } from "@/app/admin/components/DataTable";
+import { payments, paymentColumns } from "@/app/admin/Types/types";
 
+import { ColumnDef } from '@tanstack/react-table';
+type Payment = {
+  id: string;
+  email: string;
+  amount: number;
+  status: string;
+  created_at: string;
+};
 
-export default function UsersPage() {
-  const [users, setUsers] = useState([])
-  const [inputValue, setInputValue] = useState('Single')
+const columns: ColumnDef<Payment>[] = [
+  { accessorKey: "email", header: "Email" },
+  { accessorKey: "amount", header: "Amount", cell: info => `$${info.getValue<number>().toFixed(2)}` },
+  { accessorKey: "status", header: "Status" },
+  { accessorKey: "created_at", header: "Created" },
+];
 
-  useEffect(()=>{
-    const getAllData = async()=>{
-    try {
-        let domain = (process.env.NEXT_PUBLIC_Phase == 'development') ? process.env.NEXT_PUBLIC_Backend_Domain : ''
-        const res = await fetch(`${domain}/quiz/get-all-quiz`, {
-          method: 'Get',
-         
-        });
-  
-        const data = await res.json();
-  
-      console.log(data)
-       
-  
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    getAllData()
-  },[])
+export default function PaymentsPage() {
   return (
-    <section className='mx-5 container'>
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">All Questions</h1>
-      </div>
-
-
-    </section>
-
-
-  )
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">Payments</h1>
+      <DataTable
+        columns={columns}
+        apiUrl="/api/payments"
+        searchableColumns={["email", "status"]}
+        defaultSortBy="created_at"
+      />
+    </div>
+  );
 }

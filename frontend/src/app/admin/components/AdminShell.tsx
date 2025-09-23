@@ -1,6 +1,6 @@
 "use client";
 
- import { SidebarProvider } from "@/app/admin/components/UI/sidebar";
+ import { SidebarProvider } from "@/components/ui/old_sidebar";
  import { AppSidebar } from "./AppSidebar";
 
 

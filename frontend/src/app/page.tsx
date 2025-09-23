@@ -63,7 +63,7 @@ export default function HeroSection() {
           transition={{ duration: 1 }}
         >
           {/* Replace with your actual SVG or <Image /> */}
-          <Image src="/images/svg/OnlineLearning.svg" alt='NCLEX' width={500} height={500} data-aos="zoom-out" data-aos-delay="100" />
+          <Image src="/images/svg/OnlineDoctor.svg" alt='NCLEX' width={500} height={500} data-aos="zoom-out" data-aos-delay="100" />
 
         </motion.div>
       </section>

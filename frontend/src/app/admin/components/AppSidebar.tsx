@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {adminRoutes} from '../config/admin-routes'
+import {adminRoutes} from '../../../components/providers/config/admin-routes'
 
 
 export function AppSidebar() {

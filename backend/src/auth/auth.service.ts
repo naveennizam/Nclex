@@ -25,7 +25,6 @@ export class AuthService {
   }
 
 
-
   async register(email: string, password: string, name: string) {
     // ✅ Check if email already exists
     const existing = await this.usersService.findByEmail(email);
@@ -36,51 +35,18 @@ export class AuthService {
 
     return user
   }
-  // googleLogin(req) {
-  //   console.log("GOGLE_LOGIN",req.user)
-  //   if (!req.user) return ("No google user")
-  //   return {
-  //     message: "Google In fo from User",
-  //     user: req.user
-  //   }
-  // }
-
 
   async googleLogin(user: any) {
     const existing = await this.usersService.findByEmail(user.email);
-  
+
     let record
     if (existing) {
-      record=  await this.usersService.updateLastLogin(existing.id);
-    
+      record = await this.usersService.updateLastLogin(existing.id);
+
       return record
     }
-    else   return  await this.usersService.createUserByGoogle(user)
+    else return await this.usersService.createUserByGoogle(user)
   }
-
-  // async googleLogin(email: string, password: string, name: string) {
-  //   ✅ Check if email already exists
-  //   const existing = await this.usersService.findByEmail(email);
-  //   if (existing) {
-  //   return  'Email already in use'
-  //   }
-  //   const user =await  this.usersService.createUser(email, password, name);
-
-  //   return user
-  // }
-
-  // LOGIN
-  // async validateUser(email: string, password: string) {
-  //   const user = await this.usersService.findByEmail(email);
-  //   console.log('validateUser', user)
-  //   if (!user) throw new UnauthorizedException('Credientials not valid')
-
-  //   const match = await bcrypt.compare(password, user?.password);
-  //   if (!match) throw new UnauthorizedException();
-
-  //   return user
-
-  // }
 
   getTokens(user: any) {
     const payload = { email: user.email, sub: user.id, name: user.name };
@@ -106,7 +72,10 @@ export class AuthService {
     return access_token;
   }
 
-
+  async UserRecord(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    return user
+  }
 
 
 
@@ -115,7 +84,7 @@ export class AuthService {
       const payload = this.jwtService.verify(token, {
         secret: jwtConstants.secret,
       });
-    //  console.log(' Manually verified token:', payload);
+      //  console.log(' Manually verified token:', payload);
       return payload;
     } catch (err) {
       console.error(' Manual token verify error:', err.message);

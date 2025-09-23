@@ -21,13 +21,12 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refres
   }
 
   async validate(req: Request, payload: any) {
-    console.group('RefreshTokenStrategy',payload)
+  
   if (!payload?.sub || !payload?.email) {
     console.warn('⚠️ Invalid token payload');
     return null;
   }
 
-    console.log({ userId: payload.sub, email: payload.email })
     return { userId: payload.sub, email: payload.email };   
 }
 }
