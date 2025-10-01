@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { GoogleGuard } from './guards/google.guard';
 import { HeaderAccessTokenGuard } from './guards/headerAccess.guard';
-
+import { CookieOptions } from 'express';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
@@ -116,13 +116,29 @@ export class AuthController {
 
   }
 
+  // @Post('logout')
+  // logout(@Res({ passthrough: true }) res: Response) {
+  //   console.log("LOGOUT")
+  //   res.clearCookie('refresh_token');
+  //   res.clearCookie('access_token');
+  //   return { message: 'Logged out successfully' };
+  // }
+
   @Post('logout')
-  logout(@Res({ passthrough: true }) res: Response) {
-    console.log("LOGOUT")
-    res.clearCookie('refresh_token');
-    res.clearCookie('access_token');
-    return { message: 'Logged out successfully' };
-  }
+logout(@Res({ passthrough: true }) res: Response) {
+  console.log("LOGOUT");
+
+  const cookieOptions: CookieOptions = {    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: "none",
+    path: '/', // must match the path used in res.cookie()
+  };
+
+  res.clearCookie('refresh_token', cookieOptions);
+  res.clearCookie('access_token', cookieOptions);
+
+  return { message: 'Logged out successfully' };
+}
 
   // @Get('test-cookies')
   // test(@Req() req) {
