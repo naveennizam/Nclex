@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAuthFetch } from '@/app/utils/authFetch';
 import QuestionRenderer from "./QuizRender";
 
@@ -27,7 +27,6 @@ interface Question {
 }
 export default function Test() {
     const fetchWithAuth = useAuthFetch();
-    //let { user } = useAuth();
 
     const { user } = useAuth() as { user: User };
     const [data, setData] = useState<Question[]>([]);
@@ -38,6 +37,21 @@ export default function Test() {
 
     const currentItem = data[currentIndex];
 
+
+    const [seconds, setSeconds] = useState<number>(0);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    let [savedTime, setSavedTime] = useState<number[]>([]);
+    // Start timer on mount
+    useEffect(() => {
+        setSeconds(0);
+        intervalRef.current = setInterval(() => {
+            setSeconds(prev => prev + 1);
+        }, 1000);
+
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        };
+    }, [currentItem]);
 
     let router = useRouter();
 
@@ -64,7 +78,7 @@ export default function Test() {
                     }
                     else {
                         const result = await res.json();
-                        //console.log(result)
+                        //console.log('data',result)
                         setData(result.message)
                     }
 
@@ -89,26 +103,55 @@ export default function Test() {
         }));
 
     };
+    useEffect(() => {
+        console.log(`Saved times:`, savedTime);
+    }, [savedTime]);
+
     const nextButton = () => {
-        if (currentIndex == data.length - 1) {
-            setIsQuizComplete(true);
-            console.log("nextButton", selectedAnswer, data);
-            let result = data.map((item) => {
+        const finalSavedTime = [...savedTime, seconds]; 
+        setSavedTime(finalSavedTime); 
+      
+        setSeconds(0);
+        if (intervalRef.current) clearInterval(intervalRef.current);
+      
+        if (currentIndex === data.length - 1) {
+          setIsQuizComplete(true);
+            let correct_ans_total = 0;
+            let sub, mode;
+            let used_questions = data.map((item, index) => {
                 const user_ans = selectedAnswer[item.question_id];
                 const actual_ans = item.ans;
                 const is_correct = user_ans === actual_ans;
 
+                correct_ans_total = (is_correct) ? correct_ans_total + 1 : correct_ans_total;
+                sub = item.subject;
+                mode = item.type;
+
                 return {
-                    ques_id: item.question_id,
+                    user_id: user.id,
+                    question_id: item.question_id,
                     subject: item.subject,
                     system: item.system,
-                    user_ans: user_ans || null, // if user didn't answer, set null
-                    actual_ans: actual_ans,
+                    attempt_number: 1,
+                    selected_option: user_ans || null,
+                    correct_option: item.ans,
                     is_correct: is_correct,
-                    user_id: user.id
+                    time_taken_secs: finalSavedTime[index] || 0
                 };
             });
-            console.log(result)
+
+            const score = (correct_ans_total / data.length) * 100;
+            const percentage = score.toFixed(1);
+            let practice_session = {
+                total_quesions: data.length,
+                user_id: user.id,
+                correct_answers: correct_ans_total,
+                score: percentage,
+                subject: sub,
+                ques_type: mode,
+            }
+
+
             let submitAnswers = async () => {
                 try {
                     let domain = (process.env.NEXT_PUBLIC_Phase == 'development') ? process.env.NEXT_PUBLIC_Backend_Domain : ''
@@ -117,7 +160,10 @@ export default function Test() {
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(result),
+                        body: JSON.stringify({
+                            used_questions: used_questions,
+                            practice_session: practice_session
+                        }),
                     });
 
                     if (!res.ok) alert("something wrong");
@@ -134,37 +180,77 @@ export default function Test() {
 
         }
         setCurrentIndex((prev) => prev + 1);
+
     };
 
-
+   
+    const BackButton = () => {
+        // Stop the current timer
+        if (intervalRef.current) clearInterval(intervalRef.current);
+      
+        const prevIndex = currentIndex - 1;
+      
+        if (prevIndex >= 0) {
+          // Restore saved time for previous question
+          const previousTime = savedTime[prevIndex] || 0;
+          setSeconds(previousTime);
+      
+          // Set to previous question
+          setCurrentIndex(prevIndex);
+        }
+      };
+      
+      
     return (
-        <div className="test-container">
-            {currentItem && (
-                <div className="test-question-block">
-                    <div className="test-left-panel">
-                        <h3>Scenario{Number(currentIndex) + 1}</h3>
-                        <p>{currentItem.scenario}</p>
-                    </div>
-
-                    <div className="test-right-panel">
-                        <h3>Q{Number(currentIndex) + 1}: {currentItem.ques}</h3>
-                        <QuestionRenderer
-                            question={currentItem}
-                            savedAnswer={selectedAnswer[currentItem.question_id] || ''}
-                            onAnswer={(selected) => handleAnswer(currentItem?.question_id, selected)}
-
-                        />
-
-                        <button
-                            onClick={nextButton}
-                            // disabled={currentIndex == data.length - 1}
-                            className='button-success'
-                        >
-                            Next
-                        </button>
+        <section>
+            <nav className="navbar custom-navbar">
+                <div className="container-fluid">
+                    <p className="navbar-brand mx-5 my-0">NCLEX</p>
+                    <div className="d-flex mx-5">
+                        <p className=" mb-0">{seconds} sec</p>
                     </div>
                 </div>
-            )}
-        </div>
+            </nav>
+
+
+
+            <div className="test-container">
+
+                {currentItem && (
+                    <div className="test-question-block">
+
+                        <div className="test-left-panel">
+                            <h3>Scenario{Number(currentIndex) + 1}</h3>
+                            <p>{currentItem.scenario}</p>
+                        </div>
+
+                        <div className="test-right-panel">
+                            <h3>Q{Number(currentIndex) + 1}: {currentItem.ques}</h3>
+                            <QuestionRenderer
+                                question={currentItem}
+                                savedAnswer={selectedAnswer[currentItem.question_id] || ''}
+                                onAnswer={(selected) => handleAnswer(currentItem?.question_id, selected)}
+
+                            />
+
+                            <div className="m-5 d-flex justify-content-between">
+                                <button className="button-primary" onClick={BackButton}
+                                disabled={currentIndex == 0}
+                                >
+                                    Back
+                                </button>
+
+                                <button onClick={nextButton} className="button-success">
+                                    Next
+                                </button>
+                            </div>
+
+
+                        </div>
+                    </div>
+                )}
+            </div>
+
+        </section>
     );
 };

@@ -100,6 +100,38 @@ export class DbService implements OnModuleInit {
     //         `)
 
 
+    // CREATE TABLE ADAPTIVE_SESSION (
+    //   ID SERIAL PRIMARY KEY, 
+    //   USER_ID UUID NOT NULL, 
+    //   TOTAL_QUESTIONS INTEGER NOT NULL, 
+    //   CORRECT_ANSWERS INTEGER NOT NULL, 
+    //   SCORE NUMERIC(5, 2) NOT NULL, 
+    //   SUBJECT TEXT,
+    //   QUES_TYPE TEXT,
+    //   SESSION_DATE TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), 
+    //   ANSWERS JSONB NOT NULL, 
+    //   CONSTRAINT FK_USER FOREIGN KEY (USER_ID) REFERENCES USERS (ID) 
+    // );
+
+
+// CREATE TABLE IF NOT EXISTS practice_session
+// (
+//   ID SERIAL PRIMARY KEY, 
+//     user_id uuid NOT NULL,
+//     total_questions integer NOT NULL,
+//     correct_answers integer NOT NULL,
+//     score numeric(5,2) NOT NULL,
+//     subject text,
+//     ques_type text,
+//     session_date timestamp with time zone NOT NULL DEFAULT now(),
+   
+//     CONSTRAINT fk_user FOREIGN KEY (user_id)
+//         REFERENCES public.users (id) MATCH SIMPLE
+//         ON UPDATE NO ACTION
+//         ON DELETE NO ACTION
+// )
+
+
 
   }
 }

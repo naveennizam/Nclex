@@ -1,12 +1,12 @@
 @import "tailwindcss";
-
+@import './Header.css';
 :root {
   --sidebar-bg: #1e2d4f;
   --sidebar-text: rgb(255, 255, 255);
 
   --sidebar-link: rgb(255, 255, 255);
   --sidebar-underline: none;
-  
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -15,6 +15,10 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --bg-mute: hsl(240, 4%, 91%);
+  --text: oklch(0.15 0 0);
+  --muted-text: #6b7280;
+
 }
 
 .dark {
@@ -31,6 +35,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.439 0 0);
+  --bg-mute: hsl(240, 3.7%, 15.9%);
+  --text: oklch(0.95 0 0);
+  --muted-text: #94a3b8;
+
 }
 
 .subjectSystemColumn {
@@ -39,6 +47,50 @@
   gap: 8px 16px;
   margin-bottom: 10px;
 }
+
+.tabsList {
+  background-color: var(--bg-mute);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-radius: 8px;
+  padding: 4px;
+  height: auto; /* Don't force height */
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;      
+  justify-content: center; 
+  height: 40px;            
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+  color: var(--text);
+}
+
+.tab-btn[data-state="active"] {
+  background-color: var(--bg);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+table td {
+  text-align: center;
+}
+.custom-navbar {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  min-height: 32px;
+}
+
+.custom-navbar .navbar-brand {
+  margin-bottom: 0;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  font-size: 0.9rem;
+}
+
+
+
 
 /* @theme inline {
   --color-sidebar: var(--sidebar-bg);

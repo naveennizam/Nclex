@@ -8,7 +8,8 @@ const nextConfig: NextConfig = {
     STRIPE_PUBLISH_KEY: process.env.STRIPE_PUBLISH_KEY,
   },
    allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev'],
-   output: 'export',
+   reactStrictMode: true,
+  //  output: 'export',
    images: {
     unoptimized: true, // ✅ Disable Image Optimization
   },

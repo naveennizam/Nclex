@@ -1,7 +1,5 @@
 "use client";
 // DragDropQuestion from "./dragDrop";
-import { useTheme } from 'next-themes';
-//import { Question } from './types'; 
 interface Question {
   question_id: string;
   ques: string;

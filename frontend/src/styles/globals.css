@@ -154,7 +154,7 @@ body {
 
 .button-success:disabled {
   background-color: #b4ebc8;
-  cursor: none;
+  cursor: no-drop;
 }
 
 .button-error {
@@ -219,12 +219,12 @@ select {
   display: flex;
   justify-content: center;
   padding: 20px;
-  color: white;
+  color: black;
   display: flex;
   flex-direction: row;
   height: 100vh;
   width: 100vw;
-  background-color: #1e2d4f;
+  background-color: #cce4ff;
 }
 
 .test-question-block {

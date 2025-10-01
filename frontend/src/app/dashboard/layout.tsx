@@ -4,7 +4,8 @@ import { ThemeProvider } from 'next-themes';
 import ThemeToggle from '@/components/gui/ThemeToggle';
 import AdminShell from './AdminShell';
 import { ReactNode } from "react";
- import "../../styles/admin.css";
+import "../../styles/admin.css";
+import {CoonditionalDashboardProvider} from "@/app/context/ConditionalDashboardProvider";
 
 interface DashboardClientLayoutProps {
   children: ReactNode;
@@ -25,6 +26,7 @@ export default function DashboardClientLayout({ children, defaultOpen }: Dashboa
 
       <SidebarProvider defaultOpen={true}>
         <AdminShell>
+          <CoonditionalDashboardProvider />
           <main>
             {children}
           </main>
