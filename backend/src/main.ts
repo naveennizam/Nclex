@@ -9,9 +9,8 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    // origin: 'https://nclex-mc31.onrender.com',
     origin :'https://nclexfrontend.onrender.com',
-  //  origin: configService.get<string>('Frontend_Domain') , // ✅ MUST be exact origin
+  // origin: configService.get<string>('Frontend_Domain') , // ✅ MUST be exact origin
     credentials: true, // ✅ Required for cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   });

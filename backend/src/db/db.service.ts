@@ -132,6 +132,37 @@ export class DbService implements OnModuleInit {
 // )
 
 
+// CREATE TABLE IF NOT EXISTS public.used_questions (
+//   id SERIAL PRIMARY KEY,
+//   user_id UUID NOT NULL,
+//   question_id INTEGER NOT NULL,
+//   practice_session_id INTEGER NOT NULL,
+//   attempt_number INTEGER NOT NULL,
+//   selected_option TEXT NOT NULL,
+//   correct_option TEXT NOT NULL,
+//   is_correct BOOLEAN NOT NULL,
+//   time_taken_secs INTEGER,
+//   attempted_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
+//   subject TEXT,
+//   system TEXT,
+
+//   CONSTRAINT fk_practice_session FOREIGN KEY (practice_session_id)
+//       REFERENCES public.practice_session (id)
+//       ON UPDATE NO ACTION
+//       ON DELETE CASCADE,
+
+//   CONSTRAINT fk_question FOREIGN KEY (question_id)
+//       REFERENCES public.questions (id)
+//       ON UPDATE NO ACTION
+//       ON DELETE CASCADE,
+
+//   CONSTRAINT fk_user FOREIGN KEY (user_id)
+//       REFERENCES public.users (id)
+//       ON UPDATE NO ACTION
+//       ON DELETE CASCADE
+// );
+
+
 
   }
 }

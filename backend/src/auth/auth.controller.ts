@@ -68,13 +68,13 @@ export class AuthController {
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-    //  maxAge: 20 * 60 * 1000,
+      //  maxAge: 20 * 60 * 1000,
       sameSite: 'none',  // lax
       secure: true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
 
-    return { access_token: access_token ,user:user};
+    return { access_token: access_token, user: user };
   }
 
   @Get('google')
@@ -105,20 +105,20 @@ export class AuthController {
 
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
-       maxAge: 7 * 24 * 60 * 60 * 1000,
-     // maxAge: 20 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      // maxAge: 20 * 60 * 1000,
       sameSite: 'none',
       secure: true, // false for development
       path: '/', // ✅ required so it is sent to all paths
     });
-   
+
     res.redirect(`${process.env.Frontend_Domain}/dashboard`);
-   
+
   }
 
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {
-
+    console.log("LOGOUT")
     res.clearCookie('refresh_token');
     res.clearCookie('access_token');
     return { message: 'Logged out successfully' };
@@ -136,24 +136,24 @@ export class AuthController {
   async refresh(@Req() req, @Res({ passthrough: true }) res: Response) {
     const user = req.user;
     const access_token = this.authService.getAccessTokens(user);
-    res.cookie('access_token', access_token, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true, // true in production
-      // maxAge: 2 * 60 * 1000,
-      maxAge: 15 * 60 * 1000, // 15 minutes
-    });
-    const  data  =await this.authService.UserRecord(user.email);
+    // res.cookie('access_token', access_token, {
+    //   httpOnly: true,
+    //   sameSite: 'none',
+    //   secure: true, // true in production
+    //   // maxAge: 2 * 60 * 1000,
+    //   maxAge: 15 * 60 * 1000, // 15 minutes
+    // });
+    const data = await this.authService.UserRecord(user.email);
     const payload = {
-     id: data.id,
-     email: data.email,
-     role: data.role,
-     image: data.image,
-     name:data.name
-   };
-    return { access_token: access_token,user:payload };
+      id: data.id,
+      email: data.email,
+      role: data.role,
+      image: data.image,
+      name: data.name
+    };
+    return { access_token: access_token, user: payload };
   }
-  
+
 
   @Post('debug-refresh')
   debugRefresh(@Req() req) {
@@ -164,7 +164,7 @@ export class AuthController {
 
 
   // @UseGuards(HeaderAccessTokenGuard)
-  
+
   // @Get('profile')
   // async getProfile(@Req() req) {
   //   const userEmail = req.headers['x-user-email']; 
