@@ -10,8 +10,7 @@ import Link from 'next/link';
 import React from 'react';
 import Dough from './Dough';
 import { ProgressBars } from './ProgressBar'
-
-
+import {columns} from './column';
 
 
 interface User {
@@ -41,65 +40,6 @@ interface Practice_session {
   correct_answers: number;
 
 }
-
-export const columns: ColumnDef<ResultRow>[] = [
-
-  {
-    accessorKey: "is_correct",
-    header: () => <div className="text-center"></div>,
-    cell: ({ getValue }) => {
-      const value = getValue<boolean>();
-      return (
-        <div className="text-center">
-          {value ? <Check className="text-green-500" size={18} /> : <X className="text-red-500" size={18} />}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "id",
-    header: () => <div className="text-center">ID</div>,
-    cell: ({ getValue }) => <div className="text-center"> {getValue<number>()}</div>,
-  },
-  {
-    accessorKey: "correct_option",
-    header: () => <div className="text-center">Correct Opt</div>,
-    cell: ({ getValue }) => <div className="text-center"> {getValue<string>()}</div>,
-  },
-  {
-    accessorKey: "selected_option",
-    header: () => <div className="text-center">Selected Opt</div>,
-    cell: ({ getValue }) => <div className="text-center"> {getValue<string>()}</div>,
-  },
-
-  {
-    accessorKey: "subject",
-    header: () => <div className="text-center">Subject</div>,
-    cell: ({ getValue }) => <div className="text-center"> {getValue<string>()}</div>,
-  },
-  {
-    accessorKey: "system",
-    header: () => <div className="text-center">System</div>,
-    cell: ({ getValue }) => <div className="text-center"> {getValue<string>()}</div>,
-  },
-  {
-    id: "chevron",
-    header: () => <div className="text-center" />,
-    cell: ({ row }) => {
-      const id = row.original.id;
-      const ques_id = row.original.question_id;
-
-      return (
-        <div className="text-center">
-          <Link href={`/dashboard/result/test?id=${id}&ques_id=${ques_id}`} target='no_blank'>
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
-          </Link>
-        </div>
-      );
-    },
-  }
-
-];
 
 export default function DetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = React.use(params);
@@ -186,7 +126,9 @@ export default function DetailPage({ params }: { params: Promise<{ slug: string 
             {(result || []).length > 0 && (
               <div className="p-4">
                 <h1 className="text-xl font-bold mb-4">User Result Data</h1>
-                <DataTable columns={columns} data={result} />
+                {/* <DataTable columns={columns} data={result} /> */}
+                <DataTable<ResultRow> columns={columns} data={result} />
+
 
                 {/* Pagination UI */}
                 <div className="mt-4 flex items-center justify-between">

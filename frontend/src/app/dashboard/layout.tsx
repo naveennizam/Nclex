@@ -9,10 +9,9 @@ import {CoonditionalDashboardProvider} from "@/app/context/ConditionalDashboardP
 
 interface DashboardClientLayoutProps {
   children: ReactNode;
-  defaultOpen?: boolean;
 }
 
-export default function DashboardClientLayout({ children, defaultOpen }: DashboardClientLayoutProps) {
+export default function DashboardClientLayout({ children }: DashboardClientLayoutProps) {
   return (
     <ThemeProvider
       attribute="class"
