@@ -1,16 +1,15 @@
 "use client"
 import { useEffect, useState } from 'react';
-import { ColumnDef } from '@tanstack/react-table';
 import { DataTable } from '@/components/ui/data-table';
-import { ChevronRight, Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/app/context/AuthContext';
-import Link from 'next/link';
 import React from 'react';
 import Dough from './Dough';
-import { ProgressBars } from './ProgressBar'
-import {columns} from './column';
+import { ProgressBars } from './ProgressBar';
+import { columns } from '@/app/forTable/Column/resultRow';
+import {ResultRow} from "@/app/forTable/types/resultRow";
+
 
 
 interface User {
@@ -18,22 +17,7 @@ interface User {
 
 }
 
-type ResultRow = {
-  // user_id,
-  id: number;
-  question_id: number;
-  // time_taken_secs:  number;
-  selected_option: string;
-  correct_option: string;
-  practice_session_id: number;
-  is_correct: boolean;
-  attempted_at: number;
-  subject: string;
-  system: string;
 
-
-
-};
 interface Practice_session {
   score: string;
   total_questions: number;
@@ -52,7 +36,6 @@ export default function DetailPage({ params }: { params: Promise<{ slug: string 
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const pageSize = 10;
-  const router = useRouter();
   const { user } = useAuth() as { user: User };
 
   useEffect(() => {

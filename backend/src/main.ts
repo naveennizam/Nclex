@@ -9,8 +9,8 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    origin :'https://nclexfrontend.onrender.com',
-  // origin: configService.get<string>('Frontend_Domain') , // ✅ MUST be exact origin
+  origin :'https://nclexfrontend.onrender.com',
+ // origin: configService.get<string>('Frontend_Domain') , 
     credentials: true, // ✅ Required for cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   });

@@ -6,12 +6,13 @@ const useTestStore = create(
     (set) => ({
       subjects: [],
       systems: [],
+      type:[],
       numQuestions: 0,
 
-      setTestData: ({ subjects, systems, numQuestions }) =>
-        set({ subjects, systems, numQuestions }),
+      setTestData: ({ subjects, systems, numQuestions,type }) =>
+        set({ subjects, systems, numQuestions,type }),
 
-      resetTestData: () => set({ subjects: [], systems: [], numQuestions: 0 }),
+      resetTestData: () => set({ subjects: [], systems: [], numQuestions: 0, type:[] }),
     }),
     {
       name: 'lms-test', // key in localStorage

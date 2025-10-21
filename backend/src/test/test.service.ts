@@ -7,31 +7,72 @@ export class TestService {
   constructor(private db: DbService) { }
 
   async getQuestions(data: any) {
-
-    const { subjects, systems, numQuestions } = data;
-
+   
     const query = `
-    SELECT scenario.*, questions.id AS question_id, questions.scenario_id , questions.ques , questions.opt , questions.ans , questions.rationale , questions.format
-  FROM scenario
-    JOIN questions ON questions.scenario_id = scenario.id
-    WHERE
-      (scenario.system = ANY($1) OR scenario.system IS NULL)
-      AND (scenario.subject = ANY($2) OR scenario.subject IS NULL)
-    LIMIT $3;
+      WITH selected_scenarios AS (
+        SELECT *
+        FROM scenario
+        WHERE
+          (
+            $1::text[] IS NULL 
+            OR array_length($1, 1) = 0 
+            OR system = ANY($1) 
+            OR system IS NULL
+          )
+          AND (
+            $2::text[] IS NULL 
+            OR array_length($2, 1) = 0 
+            OR subject = ANY($2) 
+            OR subject IS NULL
+          )
+          AND (
+            $4::text[] IS NULL 
+            OR array_length($4, 1) = 0 
+            OR type = ANY($4)
+          )
+        LIMIT $3
+      )
+      SELECT
+        selected_scenarios.*,
+        questions.id AS question_id,
+        questions.scenario_id,
+        questions.ques,
+        questions.opt,
+        questions.ans,
+        questions.rationale,
+        questions.format
+      FROM
+        selected_scenarios
+      JOIN
+        questions ON questions.scenario_id = selected_scenarios.id;
     `;
-    const params = [systems, subjects, numQuestions];
-
+  
+    // ✅ Normalize parameters
+    const systems = Array.isArray(data.systems) && data.systems.length ? data.systems : null;
+    const subjects = Array.isArray(data.subjects) && data.subjects.length ? data.subjects : null;
+    const numQuestions = Number(data.numQuestions) || 10;
+  
+    // ✅ Handle type as string or array
+    const type =
+      data.type && Array.isArray(data.type)
+        ? data.type
+        : data.type
+        ? [data.type] // wrap string in array
+        : null;
+  
+    const params = [systems, subjects, numQuestions, type];
+  
     const res = await this.db.query(query, params);
-
-
     return res.rows;
   }
+  
+  
 
 
   async insertInPractice(payload) {
     const values = [
       payload.user_id,
-      payload.total_quesions,
+      payload.total_questions,
       payload.correct_answers,
       payload.score,
       payload.subject,
@@ -57,7 +98,7 @@ export class TestService {
       attempted_at: now
     }));
 
-    const fieldsPerRow = 11;
+    const fieldsPerRow = 13;
 
     const values = updatedAttempts
       .map((_, i) => {
@@ -71,18 +112,20 @@ export class TestService {
       r.user_id,
       r.question_id,
       r.attempt_number,
-      r.selected_option,
-      r.correct_option,
+      JSON.stringify(r.selected_option),
+      JSON.stringify(r.correct_option),
       r.practice_session_id,
       r.is_correct,
       r.attempted_at,
       r.subject,
       r.system,
-      r.time_taken_secs
+      r.time_taken_secs,
+      r.total,
+      r.obtain
     ]);
 
     const query = `
-      INSERT INTO used_questions (user_id,question_id,attempt_number,selected_option,correct_option,practice_session_id,is_correct,attempted_at,subject, system, time_taken_secs) VALUES ${values}; `;
+      INSERT INTO used_questions (user_id,question_id,attempt_number,selected_option,correct_option,practice_session_id,is_correct,attempted_at,subject, system, time_taken_secs,total,obtain) VALUES ${values}; `;
 
     try {
       return await this.db.query(query, params);
@@ -208,7 +251,7 @@ export class TestService {
   async getQuesAnswer(id: number, ques_id: number) {
     try {
       const row = await this.db.query(
-        `SELECT uq.id AS used_question_id,uq.correct_option,uq.selected_option,q.id AS question_id,q.ques,q.opt,q.rationale,q.format,q.scenario_id,s.scenario FROM used_questions uq JOIN questions q ON uq.question_id = q.id LEFT JOIN scenario s ON q.scenario_id = s.id WHERE uq.id = $1 AND uq.question_id = $2;`,
+        `SELECT uq.id AS used_question_id,uq.correct_option,uq.selected_option,uq.time_taken_secs,q.id AS question_id,q.ques,q.opt,q.rationale,q.format,q.scenario_id,s.scenario FROM used_questions uq JOIN questions q ON uq.question_id = q.id LEFT JOIN scenario s ON q.scenario_id = s.id WHERE uq.id = $1 AND uq.question_id = $2;`,
         [id, ques_id]
       )
 

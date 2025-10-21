@@ -33,7 +33,7 @@ export default function DashboardHeader() {
                 {/* Left: Logo */}
                 <div>
                     <Link href="/" className="text-lg font-semibold text-gray-900 dark:text-white">
-                        ▲ NCLEX
+                        ▲ NCLEXIA
                     </Link>
                 </div>
 

@@ -11,7 +11,6 @@ import {JwtStrategy} from './strategies/jwt.strategy'
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import {RefreshTokenStrategy} from './strategies/refresh-token.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
-import {JwtHeaderStrategy} from './strategies/jwt-header.strategy'
 
 import { DbModule } from 'src/db/db.module';
 @Module({
@@ -24,7 +23,7 @@ import { DbModule } from 'src/db/db.module';
     //   signOptions: { expiresIn: '60s' },
     // }),
   ],
-  providers: [AuthService,LocalStrategy,JwtStrategy,RefreshTokenStrategy,GoogleStrategy,JwtHeaderStrategy,
+  providers: [AuthService,LocalStrategy,JwtStrategy,RefreshTokenStrategy,GoogleStrategy,
   //   {
   //   provide: APP_GUARD,
   //   useClass: JwtAuthGuard,

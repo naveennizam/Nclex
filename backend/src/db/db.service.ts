@@ -18,6 +18,10 @@ export class DbService implements OnModuleInit {
   async query(text: string, params?: any[]) {
     return this.pool.query(text, params);
   }
+  // Expose access to a raw client for transactions
+  async getClient() {
+    return this.pool.connect();
+  }
   private async createTables() {
     console.log("HHH")
     //   private async createTables() {
@@ -68,7 +72,8 @@ export class DbService implements OnModuleInit {
     //   scenario TEXT, 
     //   subject VARCHAR(100),
     //   system VARCHAR(100),
-    //   type VARCHAR(50)
+    //   type VARCHAR(50),
+    //   score integer
     // )
     //   `)
     // await this.query(`
@@ -77,7 +82,7 @@ export class DbService implements OnModuleInit {
     //   scenario_id INTEGER NOT NULL REFERENCES scenario(id) ON DELETE CASCADE,
     //   ques TEXT NOT NULL,
     //   opt TEXT,
-    //   ans VARCHAR(10) NOT NULL,
+    //   ans JSONB,
     //   rationale TEXT,
     //   format VARCHAR(50)
     // )`)
@@ -138,13 +143,15 @@ export class DbService implements OnModuleInit {
 //   question_id INTEGER NOT NULL,
 //   practice_session_id INTEGER NOT NULL,
 //   attempt_number INTEGER NOT NULL,
-//   selected_option TEXT NOT NULL,
-//   correct_option TEXT NOT NULL,
+//   selected_option JSONBL,
+//   correct_option JSONB,
 //   is_correct BOOLEAN NOT NULL,
 //   time_taken_secs INTEGER,
 //   attempted_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
 //   subject TEXT,
 //   system TEXT,
+//   total number,
+//   obtain number
 
 //   CONSTRAINT fk_practice_session FOREIGN KEY (practice_session_id)
 //       REFERENCES public.practice_session (id)

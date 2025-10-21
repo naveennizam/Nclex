@@ -9,8 +9,8 @@ import { LocalAuthGuard } from "./local/local-auth.guard"
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { GoogleGuard } from './guards/google.guard';
-import { HeaderAccessTokenGuard } from './guards/headerAccess.guard';
 import { CookieOptions } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
@@ -126,12 +126,11 @@ export class AuthController {
 
   @Post('logout')
 logout(@Res({ passthrough: true }) res: Response) {
-  console.log("LOGOUT");
 
   const cookieOptions: CookieOptions = {    httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: "none",
-    path: '/', // must match the path used in res.cookie()
+    path: '/', 
   };
 
   res.clearCookie('refresh_token', cookieOptions);
@@ -179,21 +178,6 @@ logout(@Res({ passthrough: true }) res: Response) {
   }
 
 
-  // @UseGuards(HeaderAccessTokenGuard)
-
-  // @Get('profile')
-  // async getProfile(@Req() req) {
-  //   const userEmail = req.headers['x-user-email']; 
-  //  const  user  =await this.authService.UserRecord(userEmail);
-  //  const payload = {
-  //   id: user.id,
-  //   email: user.email,
-  //   role: user.role,
-  //   image: user.image,
-  //   name:user.name
-  // };
-  // console.log(payload)
-  //   return payload;
-  // }
-
+ 
+  
 }

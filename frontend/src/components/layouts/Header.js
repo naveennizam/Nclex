@@ -52,7 +52,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
           {/* Logo */}
           <Link href="/" className=" font-semibold text-lg">
-            ▲ NCLEX
+            ▲ NCLEXIA
           </Link>
 
           {/* Nav Links */}
@@ -130,7 +130,7 @@ export default function Navbar() {
                     <div className="absolute top-10 right-0  rounded  z-50 isHover">
                       <ul className="py-2 text-sm ">
                         <li>
-                          <Link href="/" className="block px-4 py-2 dropDownLink ">
+                          <Link href="/profile" className="block px-4 py-2 dropDownLink ">
                             Profile
                           </Link>
                         </li>

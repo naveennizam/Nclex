@@ -108,13 +108,12 @@ const Modal = ({ onClose }) => {
     if (!email || !email.includes('@'))
       return alert('Invalid email address');
 
-    const form = document.querySelector('[name="forget-pwd-form"]');
+   
 
-    const formData = new FormData(form);
-
-    const res = await fetch('/api/auth/forgot-password', {
+    let domain = (process.env.NEXT_PUBLIC_Phase == 'development') ? process.env.NEXT_PUBLIC_Backend_Domain : ''
+          const res = await fetch(`${domain}/users/forgot-password`, {
       method: 'POST',
-      body: formData,
+      body: email,
     });
 
     const data = await res.json();
@@ -206,7 +205,7 @@ const Modal = ({ onClose }) => {
           <div className="text-center space-y-2 border-b pb-4 mb-4">
             <img src="/images/icon1.png" alt="Logo" className="mx-auto h-12" />
             <h2 id="authModalLabel" className="text-2xl font-semibold">
-              Sign in to NCLEX
+              Sign in to NCLEXIA
             </h2>
             <p className="text-sm italic text-gray-500 dark:text-gray-400">
               Welcome back! Please sign in to continue
@@ -233,7 +232,11 @@ const Modal = ({ onClose }) => {
             ) : (
               <button
                 className="px-4 py-2 bg-red-500 text-white rounded-md"
-                onClick={() => setLogIn(false)}
+                onClick={() => { 
+                  setLogIn(true)
+                  setForgetPWD(false)}
+                  
+                }
               >
                 Back to Sign In
               </button>

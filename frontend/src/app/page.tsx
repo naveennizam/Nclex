@@ -3,29 +3,29 @@
 import { motion } from 'framer-motion';
 import Image from "next/image";
 import styles from "../styles/HeroSection.module.css"
-import dynamic from "next/dynamic";
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 
 
 export default function HeroSection() {
-  const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
 
   let { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false);
+   const [mounted, setMounted] = useState(false);
 
 
-  const Modal = dynamic(() => import('../components/layouts/Modal'), {
-    ssr: false
-  });
-  useEffect(() => { setMounted(true); }, [showModal]);
+  // const Modal = dynamic(() => import('../components/layouts/Modal'), {
+  //   ssr: false
+  // });
 
-  if (!mounted) return null; // Or show a skeleton/fallback
+  useEffect(() => { setMounted(true); }, []);
 
+   if (!mounted) return null; 
   return (
     <>
       <section className={styles.hero}>
+        
         <div className={styles.backgroundSvg}>
           <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
             <path
@@ -48,8 +48,8 @@ export default function HeroSection() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={styles.heroButton}
-            onClick={() => setShowModal(true)}
+            className='button-primary'
+           
           >
             Get Started
           </motion.button>
@@ -111,7 +111,7 @@ export default function HeroSection() {
 
 
 
-      {showModal && <Modal onClose={() => setShowModal(false)} />}
+      {/* {showModal && <Modal onClose={() => setShowModal(false)} />} */}
     </>
   );
 }

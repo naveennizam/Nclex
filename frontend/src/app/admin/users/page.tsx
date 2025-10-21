@@ -1,350 +1,152 @@
-// "use client"
+"use client"
+import { useEffect, useState } from 'react';
+import { DataTable } from '@/components/ui/data-table';
+import { useRouter } from 'next/navigation';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useAuth } from '@/app/context/AuthContext';
+import React from 'react';
+import { GetUsers } from '@/app/forTable/types/user';
+import { columns } from '@/app/forTable/Column/users';
 
-// import * as React from "react"
-// import {
-//   ColumnDef,
-//   ColumnFiltersState,
-//   flexRender,
-//   getCoreRowModel,
-//   getFilteredRowModel,
-//   getPaginationRowModel,
-//   getSortedRowModel,
-//   SortingState,
-//   useReactTable,
-//   VisibilityState,
-// } from "@tanstack/react-table"
-// import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+interface User {
+  id: string;
 
-// import { Button } from "@/app/admin/components/UI/button"
-// // import { Checkbox } from "@/app/admin/components/UI/checkbox"
-// import {
-//   DropdownMenu,
-//   DropdownMenuCheckboxItem,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/app/admin/components/UI/dropdown-menu"
-// import { Input } from "@/app/admin/components/UI/input"
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/app/admin/components/UI/table"
-
-// const data: Payment[] = [
-//   {
-//     id: "m5gr84i9",
-//     amount: 316,
-//     status: "success",
-//     email: "ken99@example.com",
-//   },
-//   {
-//     id: "3u1reuv4",
-//     amount: 242,
-//     status: "success",
-//     email: "Abe45@example.com",
-//   },
-//   {
-//     id: "derv1ws0",
-//     amount: 837,
-//     status: "processing",
-//     email: "Monserrat44@example.com",
-//   },
-//   {
-//     id: "5kma53ae",
-//     amount: 874,
-//     status: "success",
-//     email: "Silas22@example.com",
-//   },
-//   {
-//     id: "bhqecj4p",
-//     amount: 721,
-//     status: "failed",
-//     email: "carmella@example.com",
-//   },
-//   {
-//     id: "bhqecj4p",
-//     amount: 721,
-//     status: "failed",
-//     email: "carmella@example.com",
-//   },  {
-//     id: "bhqecj4p",
-//     amount: 721,
-//     status: "failed",
-//     email: "carmella@example.com",
-//   },  {
-//     id: "bhqecj4p",
-//     amount: 721,
-//     status: "failed",
-//     email: "carmella@example.com",
-//   },  {
-//     id: "bhqecj4p",
-//     amount: 721,
-//     status: "failed",
-//     email: "carmella@example.com",
-//   },
-// ]
-
-// export type Payment = {
-//   id: string
-//   amount: number
-//   status: "pending" | "processing" | "success" | "failed"
-//   email: string
-// }
-
-// export const columns: ColumnDef<Payment>[] = [
-//   {
-//     id: "select",
-//     // header: ({ table }) => (
-//     // //   <Checkbox
-//     // //     checked={
-//     // //       table.getIsAllPageRowsSelected() ||
-//     // //       (table.getIsSomePageRowsSelected() && "indeterminate")
-//     // //     }
-//     // //     onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-//     // //     aria-label="Select all"
-//     // //   />
-//     // ),
-//     // cell: ({ row }) => (
-//     // //   <Checkbox
-//     // //     checked={row.getIsSelected()}
-//     // //     onCheckedChange={(value) => row.toggleSelected(!!value)}
-//     // //     aria-label="Select row"
-//     // //   />
-//     // ),
-//     enableSorting: false,
-//     enableHiding: false,
-//   },
-//   {
-//     accessorKey: "status",
-//     header: "Status",
-//     cell: ({ row }) => (
-//       <div className="capitalize">{row.getValue("status")}</div>
-//     ),
-//   },
-//   {
-//     accessorKey: "email",
-//     header: ({ column }) => {
-//       return (
-//         <Button
-//           variant="ghost"
-//           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-//         >
-//           Email
-//           <ArrowUpDown />
-//         </Button>
-//       )
-//     },
-//     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-//   },
-//   {
-//     accessorKey: "amount",
-//     header: () => <div className="text-right">Amount</div>,
-//     cell: ({ row }) => {
-//       const amount = parseFloat(row.getValue("amount"))
-
-//       // Format the amount as a dollar amount
-//       const formatted = new Intl.NumberFormat("en-US", {
-//         style: "currency",
-//         currency: "USD",
-//       }).format(amount)
-
-//       return <div className="text-right font-medium">{formatted}</div>
-//     },
-//   },
-//   {
-//     id: "actions",
-//     enableHiding: false,
-//     cell: ({ row }) => {
-//       const payment = row.original
-
-//       return (
-//         <DropdownMenu>
-//           <DropdownMenuTrigger asChild>
-//             <Button variant="ghost" className="h-8 w-8 p-0">
-//               <span className="sr-only">Open menu</span>
-//               <MoreHorizontal />
-//             </Button>
-//           </DropdownMenuTrigger>
-//           <DropdownMenuContent align="end">
-//             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-//             <DropdownMenuItem
-//               onClick={() => navigator.clipboard.writeText(payment.id)}
-//             >
-//               Copy payment ID
-//             </DropdownMenuItem>
-//             <DropdownMenuSeparator />
-//             <DropdownMenuItem>View customer</DropdownMenuItem>
-//             <DropdownMenuItem>View payment details</DropdownMenuItem>
-//           </DropdownMenuContent>
-//         </DropdownMenu>
-//       )
-//     },
-//   },
-// ]
-
-// export default function DataTableDemo() {
-//  // useEffect(() => {
-//   //   fetch('/api/users') // proxy to your Nest API or direct
-//   //     .then(res => res.json())
-//   //     .then(data => setUsers(data))
-//   // }, [])
-
-//   const [sorting, setSorting] = React.useState<SortingState>([])
-//   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-//     []
-//   )
-//   const [columnVisibility, setColumnVisibility] =
-//     React.useState<VisibilityState>({})
-//   const [rowSelection, setRowSelection] = React.useState({})
-
-//   const table = useReactTable({
-//     data,
-//     columns,
-//     onSortingChange: setSorting,
-//     onColumnFiltersChange: setColumnFilters,
-//     getCoreRowModel: getCoreRowModel(),
-//     getPaginationRowModel: getPaginationRowModel(),
-//     getSortedRowModel: getSortedRowModel(),
-//     getFilteredRowModel: getFilteredRowModel(),
-//     onColumnVisibilityChange: setColumnVisibility,
-//     onRowSelectionChange: setRowSelection,
-//     state: {
-//       sorting,
-//       columnFilters,
-//       columnVisibility,
-//       rowSelection,
-//     },
-//   })
-
-//   return (
-//     <div className="w-full">
-//       <div className="flex items-center py-4">
-//         {/* <Input
-//           placeholder="Filter emails..."
-//           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-//           onChange={(event) =>
-//             table.getColumn("email")?.setFilterValue(event.target.value)
-//           }
-//           className="max-w-sm"
-//         /> */}
+}
 
 
-//         {/* <DropdownMenu>
-//           <DropdownMenuTrigger asChild>
-//             <Button variant="outline" className="ml-auto">
-//               Columns <ChevronDown />
-//             </Button>
-//           </DropdownMenuTrigger>
-//           <DropdownMenuContent align="end">
-//             {table
-//               .getAllColumns()
-//               .filter((column) => column.getCanHide())
-//               .map((column) => {
-//                 return (
-//                   <DropdownMenuCheckboxItem
-//                     key={column.id}
-//                     className="capitalize"
-//                     checked={column.getIsVisible()}
-//                     onCheckedChange={(value) =>
-//                       column.toggleVisibility(!!value)
-//                     }
-//                   >
-//                     {column.id}
-//                   </DropdownMenuCheckboxItem>
-//                 )
-//               })}
-//           </DropdownMenuContent>
-//         </DropdownMenu> */}
 
-//       </div>
-//       <div className="overflow-hidden rounded-md border">
-//         <Table>
-//           <TableHeader>
-//             {table.getHeaderGroups().map((headerGroup) => (
-//               <TableRow key={headerGroup.id}>
-//                 {headerGroup.headers.map((header) => {
-//                   return (
-//                     <TableHead key={header.id}>
-//                       {header.isPlaceholder
-//                         ? null
-//                         : flexRender(
-//                             header.column.columnDef.header,
-//                             header.getContext()
-//                           )}
-//                     </TableHead>
-//                   )
-//                 })}
-//               </TableRow>
-//             ))}
-//           </TableHeader>
-//           <TableBody>
-//             {table.getRowModel().rows?.length ? (
-//               table.getRowModel().rows.map((row) => (
-//                 <TableRow
-//                   key={row.id}
-//                   data-state={row.getIsSelected() && "selected"}
-//                 >
-//                   {row.getVisibleCells().map((cell) => (
-//                     <TableCell key={cell.id}>
-//                       {flexRender(
-//                         cell.column.columnDef.cell,
-//                         cell.getContext()
-//                       )}
-//                     </TableCell>
-//                   ))}
-//                 </TableRow>
-//               ))
-//             ) : (
-//               <TableRow>
-//                 <TableCell
-//                   colSpan={columns.length}
-//                   className="h-24 text-center"
-//                 >
-//                   No results.
-//                 </TableCell>
-//               </TableRow>
-//             )}
-//           </TableBody>
-//         </Table>
-//       </div>
-//       <div className="flex items-center justify-end space-x-2 py-4">
-//         <div className="text-muted-foreground flex-1 text-sm">
-//           {table.getFilteredSelectedRowModel().rows.length} of{" "}
-//           {table.getFilteredRowModel().rows.length} row(s) selected.
-//         </div>
-//         <div className="space-x-2">
-//           <Button
-//             variant="outline"
-//             size="sm"
-//             onClick={() => table.previousPage()}
-//             disabled={!table.getCanPreviousPage()}
-//           >
-//             Previous
-//           </Button>
-//           <Button
-//             variant="outline"
-//             size="sm"
-//             onClick={() => table.nextPage()}
-//             disabled={!table.getCanNextPage()}
-//           >
-//             Next
-//           </Button>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-export default function DataTableDemo() {
+export default function DetailPage() {
 
-  return(
-    <div>
-      <h1>USERS</h1>
-    </div>
+
+  const [otherUsers, setOtherUsers] = useState<GetUsers[]>([]);
+  const [adminTotal, setAdminTotal] = useState(0);
+  const [users, setUsers] = useState<GetUsers[]>([]);
+
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
+
+  const pageSize = 10;
+  const { user } = useAuth() as { user: User };
+
+  useEffect(() => {
+    let domain = (process.env.NEXT_PUBLIC_Phase == 'development') ? process.env.NEXT_PUBLIC_Backend_Domain : ''
+
+    const details_result = async () => {
+      try {
+        const userUrl = `${domain}/admin/get_users?limit=${pageSize}&offset=${page * pageSize}`;
+        const teamUrl = `${domain}/admin/get_team_members`;
+
+        // Run both fetches in parallel
+        const [userRes, teamRes] = await Promise.all([fetch(userUrl), fetch(teamUrl)]);
+
+        // Parse both JSON responses
+        const [userJson, teamJson] = await Promise.all([userRes.json(), teamRes.json()]);
+
+        setUsers(userJson.data);
+        setTotal(userJson.total);
+
+        setOtherUsers(teamJson.data);
+        setAdminTotal(teamJson.total);
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      }
+    };
+
+    details_result()
+  }, [])
+
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      const domain =
+        process.env.NEXT_PUBLIC_Phase === 'development'
+          ? process.env.NEXT_PUBLIC_Backend_Domain
+          : '';
+
+      try {
+        const res = await fetch(
+          `${domain}/admin/get_users?limit=${pageSize}&offset=${page * pageSize}`
+        );
+
+        const userJson = await res.json();
+
+        setUsers(userJson.data);
+        setTotal(userJson.total);
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      }
+    };
+
+    loadUsers();
+  }, [page]);
+
+
+  return (
+    <section className='container m-5'>
+
+      <Tabs defaultValue="users" className="w-[1000px]  ">
+        <TabsList className="tabsList grid grid-cols-2 w-full rounded-md p-1">
+          <TabsTrigger
+            value="users"
+            className="tab-btn" >
+            Users
+          </TabsTrigger>
+          <TabsTrigger
+            value="teamMembers"
+            className="tab-btn"
+          >
+            Admins
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="users">
+
+          <div className=" mx-auto px-4 py-6">
+            {(users || []).length > 0 && (
+              <div className="p-4">
+                <h1 className="text-xl font-bold mb-4">User </h1>
+                <DataTable<GetUsers> columns={columns} data={users} />
+
+
+                <div className="mt-4 flex items-center justify-between">
+                  <button
+                    disabled={page === 0}
+                    onClick={() => setPage((p) => p - 1)}
+                    className="button-primary"
+                  >
+                    Previous
+                  </button>
+                  <span>
+                    Page {page + 1} of {Math.ceil(total / pageSize)}
+                  </span>
+                  <button
+                    disabled={(page + 1) * pageSize >= total}
+                    onClick={() => setPage((p) => p + 1)}
+                    className="button-success"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="teamMembers">
+          <div className="max-w-3xl mx-auto px-4 py-6">
+            {(otherUsers || []).length > 0 && (
+              <div className="p-4">
+                <h1 className="text-xl font-bold mb-4">Admin</h1>
+                <DataTable<GetUsers> columns={columns} data={otherUsers} />
+
+
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
+
+      </Tabs >
+    </section>
   )
 }

@@ -1,32 +1,32 @@
-import { redirect } from 'next/navigation';
-import AdminShell from "./components/AdminShell";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/app/admin/components/AppSidebar";
-import { useAuth } from '@/app/context/AuthContext';
-import { useAuthFetch } from '@/app/utils/authFetch';
-
-// import { cookies } from 'next/headers';
-import AdminGuard from './AdminGuard'
+import { SidebarProvider, } from "@/components/ui/sidebar";
+import AdminGuard from './guard/AdminGuard'
+import { ThemeProvider } from 'next-themes';
+import ThemeToggle from '@/components/gui/ThemeToggle';
+import "../../styles/admin.css";
+import { CoonditionalDashboardProvider } from "@/app/context/ConditionalDashboardProvider";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
 
-  // const token = await cookies().get('refresh_token')?.value;
-  // console.log("token,token",await cookies(),token)
-  // const cookieStore = await cookies()
-  // const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
-
-
-  console.log("🧱 Admin Layout rendered");
 
   return (
-    <AdminGuard>
-      <SidebarProvider >
-        <AppSidebar />
-        <main>
-          <SidebarTrigger />
-          {children}
-        </main>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem={true}
+      storageKey="nclex-theme"
+      value={{ light: 'light', dark: 'dark', system: "system" }}
+      disableTransitionOnChange
+    >
+      <ThemeToggle />
+      <SidebarProvider defaultOpen={true}>
+        <AdminGuard>
+          <CoonditionalDashboardProvider />
+          <main>
+            {children}
+          </main>
+
+        </AdminGuard>
       </SidebarProvider>
-    </AdminGuard>
+    </ThemeProvider>
   );
 }

@@ -1,6 +1,6 @@
 
 "use client"
-import { BookHeart, Home, Inbox, Search, Settings, NotebookPen, ListChecks, NotepadText, ChevronUp, ChevronDown } from "lucide-react"
+import { BookHeart, Home, Settings, NotebookPen, ListChecks, NotepadText, ChevronUp, ChevronDown } from "lucide-react"
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
@@ -34,11 +34,7 @@ const items = [
     url: "/dashboard",
     icon: Home,
   },
-  // {
-  //   title: "Study Planner",
-  //   url: "#",
-  //   icon: Inbox,
-  // },
+  
   {
     title: "Qbank",
     icon: BookHeart,

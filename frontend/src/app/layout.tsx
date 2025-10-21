@@ -22,8 +22,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NCLEX preparation",
-  description: 'A Learning Management System',
+  title: "Nclexia - Ace Your NCLEX Exam with Smart Learning",
+  description: 'Master the NCLEX exam with personalized practice tests, and interactive lessons designed to boost your nursing career success.',
   manifest: '/manifest.json', 
 
 };

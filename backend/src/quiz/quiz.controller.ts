@@ -10,11 +10,11 @@ export class QuizController {
     @Post('add-quiz')
     async addQuizQuestion(@Body() body: any) {
         try {
-             await this.quizService.addQuizQuestion(body);
+           await this.quizService.addQuizQuestion(body);
             return { message: '✅ Quiz question added successfully' };
         } catch (error) {
 
-            return { message: '❌ Failed to add quiz question' };
+           return { message: '❌ Failed to add quiz question' };
         }
     }
 

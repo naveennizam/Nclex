@@ -1,256 +1,291 @@
-'use client'
+'use client';
 
 import { useAuth } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import { useAuthFetch } from '@/app/utils/authFetch';
-import QuestionRenderer from "./QuizRender";
-
+import QuestionRenderer from './QuizRender';
+import { Questions, AnswerValue } from '@/app/types';
 
 interface User {
-    id: string;
-    email: string;
+  id: string;
+  email: string;
 }
-interface Question {
-    question_id: string;
-    ques: string;
-    opt: string;
-    rationale: string;
-    ans: string;
-    format: string;
-    scenario: string;
-    id: string;
-    subject: string;
-    system: string;
-    type: string;
 
-}
+
 export default function Test() {
-    const fetchWithAuth = useAuthFetch();
+  const fetchWithAuth = useAuthFetch();
+  const { user } = useAuth() as { user: User };
+  const router = useRouter();
 
-    const { user } = useAuth() as { user: User };
-    const [data, setData] = useState<Question[]>([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [savedAnswer, setSavedAnswer] = useState<string>('');
-    const [selectedAnswer, setSelectedAnswer] = useState<Record<string, string>>({});
-    const [isQuizComplete, setIsQuizComplete] = useState<boolean>(false);
+  const [questions, setQuestions] = useState<Questions[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<Record<string, AnswerValue>>({});
+  const [savedTime, setSavedTime] = useState<number[]>([]);
+  const [seconds, setSeconds] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-    const currentItem = data[currentIndex];
+  const currentQuestion = questions[currentIndex];
 
+  useEffect(() => {
+    setSeconds(0);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
 
-    const [seconds, setSeconds] = useState<number>(0);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
-    let [savedTime, setSavedTime] = useState<number[]>([]);
-    // Start timer on mount
-    useEffect(() => {
-        setSeconds(0);
-        intervalRef.current = setInterval(() => {
-            setSeconds(prev => prev + 1);
-        }, 1000);
-
-        return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-        };
-    }, [currentItem]);
-
-    let router = useRouter();
-
-    useEffect(() => {
-        let getData = localStorage.getItem('lms-test');
-        if (getData) {
-            let datum = JSON.parse(getData).state;
-
-
-            let getDataFromApi = async () => {
-                try {
-                    let domain = (process.env.NEXT_PUBLIC_Phase == 'development') ? process.env.NEXT_PUBLIC_Backend_Domain : ''
-                    const res = await fetchWithAuth(`${domain}/test/get-quiz`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(datum),
-                    });
-
-                    if (!res.ok) {
-
-                        alert("something wrong")
-                    }
-                    else {
-                        const result = await res.json();
-                        //console.log('data',result)
-                        setData(result.message)
-                    }
-
-                } catch (error) {
-                    console.error(error)
-                }
-            }
-            getDataFromApi()
-        }
-    }, [])
-
-
-    const handleAnswer = (questionId: string, selected: string | string[]) => {
-        // console.log(selected)
-        const value = Array.isArray(selected)
-            ? [...selected].sort().join('')
-            : selected;
-
-        setSelectedAnswer((prev) => ({
-            ...prev,
-            [questionId]: value,
-        }));
-
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-    useEffect(() => {
-        console.log(`Saved times:`, savedTime);
-    }, [savedTime]);
+  }, [currentIndex]);
 
-    const nextButton = () => {
-        const finalSavedTime = [...savedTime, seconds]; 
-        setSavedTime(finalSavedTime); 
-      
-        setSeconds(0);
-        if (intervalRef.current) clearInterval(intervalRef.current);
-      
-        if (currentIndex === data.length - 1) {
-          setIsQuizComplete(true);
-            let correct_ans_total = 0;
-            let sub, mode;
-            let used_questions = data.map((item, index) => {
-                const user_ans = selectedAnswer[item.question_id];
-                const actual_ans = item.ans;
-                const is_correct = user_ans === actual_ans;
+  useEffect(() => {
+    const getData = localStorage.getItem('lms-test');
+    if (!getData) return;
 
-                correct_ans_total = (is_correct) ? correct_ans_total + 1 : correct_ans_total;
-                sub = item.subject;
-                mode = item.type;
+    const parsed = JSON.parse(getData);
+    const datum = parsed.state;
 
-                return {
-                    user_id: user.id,
-                    question_id: item.question_id,
-                    subject: item.subject,
-                    system: item.system,
-                    attempt_number: 1,
-                    selected_option: user_ans || null,
-                    correct_option: item.ans,
-                    is_correct: is_correct,
-                    time_taken_secs: finalSavedTime[index] || 0
-                };
-            });
+    const getDataFromApi = async () => {
+      try {
+        const domain = (process.env.NEXT_PUBLIC_Phase === 'development')
+          ? process.env.NEXT_PUBLIC_Backend_Domain
+          : '';
 
-            const score = (correct_ans_total / data.length) * 100;
-            const percentage = score.toFixed(1);
-            let practice_session = {
-                total_quesions: data.length,
-                user_id: user.id,
-                correct_answers: correct_ans_total,
-                score: percentage,
-                subject: sub,
-                ques_type: mode,
-            }
+        const res = await fetchWithAuth(`${domain}/test/get-quiz`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datum),
+        });
 
-
-            let submitAnswers = async () => {
-                try {
-                    let domain = (process.env.NEXT_PUBLIC_Phase == 'development') ? process.env.NEXT_PUBLIC_Backend_Domain : ''
-                    const res = await fetch(`${domain}/test/submit-answers`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            used_questions: used_questions,
-                            practice_session: practice_session
-                        }),
-                    });
-
-                    if (!res.ok) alert("something wrong");
-
-                    else router.push('/dashboard/result');
-
-
-                } catch (error) {
-                    console.error(error)
-                }
-            }
-
-            submitAnswers()
-
+        if (!res.ok) {
+          alert("Something went wrong");
+          return;
         }
-        setCurrentIndex((prev) => prev + 1);
 
+        const result = await res.json();
+        setQuestions(result.message);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-   
-    const BackButton = () => {
-        // Stop the current timer
-        if (intervalRef.current) clearInterval(intervalRef.current);
-      
-        const prevIndex = currentIndex - 1;
-      
-        if (prevIndex >= 0) {
-          // Restore saved time for previous question
-          const previousTime = savedTime[prevIndex] || 0;
-          setSeconds(previousTime);
-      
-          // Set to previous question
-          setCurrentIndex(prevIndex);
+    getDataFromApi();
+  }, []);
+
+  const handleAnswer = (questionId: string, selected: string | string[], format: string) => {
+    // let value = selected;
+    let value: string | string[] | { text: string | string[] } = selected;
+    if (format == "Highlight") {
+      value = { text: value }
+    }
+    if (format !== 'Dropdown' && format != 'Highlight') {
+      Array.isArray(selected)
+      value = [...selected].sort().join('');
+    }
+    setSelectedAnswer((prev) => ({
+      ...prev,
+      [questionId]: value,
+    }));
+  };
+
+  const nextButton = () => {
+    const updatedTime = [...savedTime, seconds];
+    setSavedTime(updatedTime);
+    setSeconds(0);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    if (currentIndex === questions.length - 1) {
+      submitQuiz(updatedTime);
+      return;
+    }
+
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  const backButton = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    const prevIndex = currentIndex - 1;
+    if (prevIndex >= 0) {
+      const previousTime = savedTime[prevIndex] || 0;
+      setSeconds(previousTime);
+      setCurrentIndex(prevIndex);
+    }
+  };
+
+  const getScenarioQuestionCount = () => {
+    if (!currentQuestion) return 0;
+    return questions.filter(q => q.scenario_id === currentQuestion.scenario_id).length;
+  };
+
+  const getCurrentItemIndex = () => {
+    if (!currentQuestion) return 0;
+    const scenarioQuestions = questions.filter(q => q.scenario_id === currentQuestion.scenario_id);
+    return scenarioQuestions.findIndex(q => q.question_id === currentQuestion.question_id) + 1;
+  };
+
+  const submitQuiz = async (timeList: number[]) => {
+    let correct = 0;
+
+    const used_questions = questions.map((q, i) => {
+      // Normalize correct answer to always be an array
+      const correctAnsArray = Array.isArray(q.ans)
+        ? q.ans
+        : typeof q.ans === 'string'
+          ? q.ans.split('')
+          : [];
+
+      const userAnsString = selectedAnswer[q.question_id] || '';
+
+      //  let userAnsArray;
+      let userAnsArray: string[] = [];
+      let userHighlight: string[] = [];
+      // Normalize user answer depending on question format
+      if (q.format === "Dropdown") {
+        userAnsArray = Array.isArray(userAnsString) ? userAnsString : [];
+      }
+      else if (q.format === "Highlight") {
+        let text = "";
+
+        if (!Array.isArray(userAnsString) && typeof userAnsString === "object" && userAnsString !== null) {
+          const t = userAnsString.text;
+          text = Array.isArray(t) ? t.join("") : t;
+        } else if (Array.isArray(userAnsString)) {
+          text = userAnsString.join("");
+        } else if (typeof userAnsString === "string") {
+          text = userAnsString;
         }
+
+        userHighlight = (text == '') ? [] : [text]
+      }
+      else {
+        userAnsArray = typeof userAnsString === "string" ? userAnsString.split("") : [];
+      }
+
+
+
+
+
+
+
+      let isCorrect = false;
+      let total = 0;
+      let obtain = 0;
+
+      // Evaluate correctness
+      if (q.format !== "Highlight") {
+        const correctSet = new Set(correctAnsArray);
+        const selectedSet = new Set(userAnsArray);
+
+        selectedSet.forEach((item) => {
+          if (correctSet.has(item)) obtain++;
+        });
+
+        total = correctSet.size;
+        isCorrect = obtain === total && selectedSet.size === correctSet.size;
+
+        if (isCorrect) correct++;
+      } else {
+        const selectedText = userHighlight.length == 0 ? userHighlight : userHighlight[0].trim();
+        const correctText = q.ans[0].trim();
+        obtain = selectedText === correctText ? 1 : 0;
+        total = q?.score ?? 0;
+        isCorrect = obtain === total;
+        if (isCorrect) correct++;
+      }
+
+      return {
+        user_id: user.id,
+        question_id: q.question_id,
+        subject: q.subject,
+        system: q.system,
+        attempt_number: 1,
+        selected_option:
+          q.format === "Highlight" ? userHighlight : userAnsArray,
+        correct_option: correctAnsArray,
+        is_correct: isCorrect,
+        time_taken_secs: timeList[i] || 0,
+        total,
+        obtain,
       };
-      
-      
-    return (
-        <section>
-            <nav className="navbar custom-navbar">
-                <div className="container-fluid">
-                    <p className="navbar-brand mx-5 my-0">NCLEX</p>
-                    <div className="d-flex mx-5">
-                        <p className=" mb-0">{seconds} sec</p>
-                    </div>
-                </div>
-            </nav>
+    })
+    const percentage = ((correct / used_questions.length) * 100).toFixed(1);
+
+    const practice_session = {
+      total_questions: used_questions.length,
+      user_id: user.id,
+      correct_answers: correct,
+      score: percentage,
+      subject: questions[0]?.subject,
+      ques_type: questions[0]?.type,
+    };
+    try {
+      const domain =
+        process.env.NEXT_PUBLIC_Phase === 'development'
+          ? process.env.NEXT_PUBLIC_Backend_Domain
+          : '';
+
+      const res = await fetch(`${domain}/test/submit-answers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ practice_session, used_questions }),
+      });
+
+      if (!res.ok) {
+        alert('Submission failed');
+        return;
+      }
+
+      router.push('/dashboard/result');
+    } catch (err) {
+      console.error('Error submitting quiz:', err);
+    }
+  };
 
 
+  return (
+    <section>
+      <nav className="navbar custom-navbar">
+        <div className="container-fluid">
+          <p className="navbar-brand mx-5 my-0">NCLEX</p>
+          <div className="d-flex mx-5">
+            <p className=" mb-0">{seconds} sec</p>
+          </div>
+        </div>
+      </nav>
 
-            <div className="test-container">
-
-                {currentItem && (
-                    <div className="test-question-block">
-
-                        <div className="test-left-panel">
-                            <h3>Scenario{Number(currentIndex) + 1}</h3>
-                            <p>{currentItem.scenario}</p>
-                        </div>
-
-                        <div className="test-right-panel">
-                            <h3>Q{Number(currentIndex) + 1}: {currentItem.ques}</h3>
-                            <QuestionRenderer
-                                question={currentItem}
-                                savedAnswer={selectedAnswer[currentItem.question_id] || ''}
-                                onAnswer={(selected) => handleAnswer(currentItem?.question_id, selected)}
-
-                            />
-
-                            <div className="m-5 d-flex justify-content-between">
-                                <button className="button-primary" onClick={BackButton}
-                                disabled={currentIndex == 0}
-                                >
-                                    Back
-                                </button>
-
-                                <button onClick={nextButton} className="button-success">
-                                    Next
-                                </button>
-                            </div>
-
-
-                        </div>
-                    </div>
-                )}
+      <div className="test-container">
+        {currentQuestion && (
+          <div className="test-question-block">
+            <div className="test-left-panel">
+              <h3>Scenario</h3>
+              <p>{currentQuestion.scenario}</p>
             </div>
 
-        </section>
-    );
-};
+            <div className="test-right-panel">
+              <h4>Item {getCurrentItemIndex()} of {getScenarioQuestionCount()}</h4>
+              {!['Dropdown', 'Highlight'].includes(currentQuestion.format) && (
+                <p>{currentQuestion.ques}</p>
+              )}
+
+              <QuestionRenderer
+                question={currentQuestion}
+                savedAnswer={selectedAnswer[currentQuestion.question_id] || ''}
+                onAnswer={(selected) => handleAnswer(currentQuestion.question_id, selected, currentQuestion.format)}
+              />
+
+              <div className="m-5 d-flex justify-content-between">
+                <button className="button-primary" onClick={backButton} disabled={currentIndex === 0}>
+                  Back
+                </button>
+                <button onClick={nextButton} className="button-success">
+                  {currentIndex === questions.length - 1 ? 'Submit' : 'Next'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}

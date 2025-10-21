@@ -81,9 +81,10 @@ const CheckboxWithMasterSubject = () => {
       subjects: checkedSubjects,
       systems: checkedSystems,
       numQuestions: parseInt(numQuestions),
+      type:mode
     });
 
-    console.log("Set test data:", { checkedSubjects, checkedSystems, numQuestions });
+    console.log("Set test data:", { checkedSubjects, checkedSystems, numQuestions ,mode});
 
     setTimeout(() => { router.push('/dashboard/test') }, 50);
 

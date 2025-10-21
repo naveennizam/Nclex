@@ -2,7 +2,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeProvider } from 'next-themes';
 import ThemeToggle from '@/components/gui/ThemeToggle';
-import AdminShell from './AdminShell';
+import AdminShell from './guard/AdminShell';
 import { ReactNode } from "react";
 import "../../styles/admin.css";
 import {CoonditionalDashboardProvider} from "@/app/context/ConditionalDashboardProvider";

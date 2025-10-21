@@ -8,28 +8,18 @@ import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAuth } from '@/app/context/AuthContext';
 import Link from 'next/link';
-import {columns} from './column';
+import {columns} from '@/app/forTable/Column/result';
+import  {Result} from "@/app/forTable/types/Result";
+
 
 interface User {
   id: string;
 
 }
 
-type ResultRow = {
-  id: number,
-  total_questions: number;
-  correct_answers: string;
-  score: string;
-  formatted_date: string;
-  ques_type: string;
-  subject: string;
-};
-
-
-
 
 export default function ResultsPage() {
-  const [practice, setPractice] = useState<ResultRow[]>([]);
+  const [practice, setPractice] = useState<Result[]>([]);
 
 
 

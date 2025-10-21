@@ -6,7 +6,7 @@ export class TestController {
   constructor(private readonly testService: TestService) { }
 
   @Post('get-quiz')
-  async addQuizQuestion(@Body() body: any) {
+  async getQuizQuestion(@Body() body: any) {
     try {
 
       let data = await this.testService.getQuestions(body);
@@ -19,10 +19,10 @@ export class TestController {
   @Post('submit-answers')
   async submitAnswers(@Body() body: any) {
     const { practice_session, used_questions } = body;
-  
+  console.log(practice_session, used_questions)
     const practice_session_id = await this.testService.insertInPractice(practice_session);
   
-    return await this.testService.insertInUsedQuestions(practice_session_id, used_questions);
+  return await this.testService.insertInUsedQuestions(practice_session_id, used_questions);
   }
   
 

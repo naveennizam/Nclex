@@ -6,8 +6,9 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { QuizModule } from './quiz/quiz.module';
 import { TestModule } from './test/test.module';
+import { AdminModule } from './admin/admin.module';
 @Module({
-  imports: [AuthModule, UsersModule,ConfigModule.forRoot(), QuizModule, TestModule],
+  imports: [AuthModule, UsersModule,ConfigModule.forRoot(), QuizModule, TestModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })
